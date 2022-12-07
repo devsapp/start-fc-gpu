@@ -12,7 +12,7 @@
 
 ## 包含内容
 
-- [fc-http-gpu-utils-nvidia-smi](fc-http-gpu-utils-nvidia-smi/src) : s init fc-http-gpu-utils-nvidia-smi 
+- ```GPU运行环境检测``` [fc-http-gpu-utils-nvidia-smi](fc-http-gpu-utils-nvidia-smi/src) : s init fc-http-gpu-utils-nvidia-smi 
 
 ---
 
