@@ -2,7 +2,7 @@ Type: Application
 Name: fc-http-gpu-utils-nvidia-smi
 Provider:
   - 阿里云
-Version: 1.0.4
+Version: 1.0.5
 Description: 快速检测阿里云函数计算GPU实例的GPU运行环境
 HomePage: https://github.com/devsapp/start-fc-gpu
 Tags:
