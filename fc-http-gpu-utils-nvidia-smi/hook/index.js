@@ -1,6 +1,15 @@
 async function preInit(inputObj) {
     console.log(`
+    ╭━━━┳━━━╮╭━━━╮╱╱╱╱╱╱╱╱╱╱╱╱╭╮╱╱╱╱╱╱╱╱╱╱╭━━━┳━━━┳╮╱╭╮
+    ┃╭━━┫╭━╮┃┃╭━╮┃╱╱╱╱╱╱╱╱╱╱╱╱┃┃╱╱╱╱╱╱╱╱╱╱┃╭━╮┃╭━╮┃┃╱┃┃
+    ┃╰━━┫┃╱╰╯┃╰━━┳━━┳━┳╮╭┳━━┳━┫┃╭━━┳━━┳━━╮┃┃╱╰┫╰━╯┃┃╱┃┃
+    ┃╭━━┫┃╱╭╮╰━━╮┃┃━┫╭┫╰╯┃┃━┫╭┫┃┃┃━┫━━┫━━┫┃┃╭━┫╭━━┫┃╱┃┃
+    ┃┃╱╱┃╰━╯┃┃╰━╯┃┃━┫┃╰╮╭┫┃━┫┃┃╰┫┃━╋━━┣━━┃┃╰┻━┃┃╱╱┃╰━╯┃
+    ╰╯╱╱╰━━━╯╰━━━┻━━┻╯╱╰╯╰━━┻╯╰━┻━━┻━━┻━━╯╰━━━┻╯╱╱╰━━━╯
+
     * Welcome to FC Serverless GPU
+    - Code : https://github.com/devsapp/start-fc-gpu
+    - Manual : https://help.aliyun.com/document_detail/56417.html
     
     * Cloud services required：
     - FC : https://fc.console.aliyun.com/
