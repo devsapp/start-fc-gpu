@@ -15,7 +15,7 @@
 #   有问题快来钉钉群问一下吧：33947367
 # ------------------------------------
 edition: 1.0.0
-name: fc-api-utils-nvidia-smi
+name: fc-http-gpu-utils-nvidia-smi
 # access 是当前应用所需要的密钥信息配置：
 # 密钥配置可以参考：https://www.serverless-devs.com/serverless-devs/command/config
 # 密钥使用顺序可以参考：https://www.serverless-devs.com/serverless-devs/tool#密钥使用顺序与规范
@@ -56,7 +56,7 @@ services:
         timeout: 300
         runtime: custom-container
         customContainerConfig:
-          image: registry.{{ region }}.aliyuncs.com/serverless_devs/fc_api_utils_nvidia_smi:latest
+          image: registry.{{ region }}.aliyuncs.com/serverless_devs/fc-http-gpu-utils-nvidia-smi:latest
         codeUri: ./code
       triggers:
         - name: httpTrigger
