@@ -63,6 +63,11 @@
             - 通过s调用：`s invoke -e '{"path": "/invoke?mode=details","method": "POST"}'`
             - 通过curl调用：`curl -v -X POST "http://{your_function_http_endpoint}/invoke?mode=details"`
 
+- 根据您选择直接使用官方公开示例镜像、或者从源码构建镜像这2种不同的方式，需要对s.yaml进行一些微调，具体说明如下：
+    - 1. 如果您期望直接使用官方公开示例镜像，请删除/注释pre-deploy部分，这样将在s deploy阶段跳过构建镜像，直接进行部署（官网公开示例镜像均为public镜像，无须构建可直接在函数中使用）。
+    - 2. 如果您期望从源码构建镜像，则保留pre-deploy部分，这样将在s deploy阶段自动构建镜像，然后进行部署。
+    - ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/s_yaml_config.png?raw=true)
+
 
 </deploy>
 

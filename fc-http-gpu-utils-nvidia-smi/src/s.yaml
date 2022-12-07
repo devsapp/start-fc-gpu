@@ -31,17 +31,12 @@ services:
   fc-gpu: # 业务名称/模块名称
     component:  fc # 组件名称，Serverless Devs 工具本身类似于一种游戏机，不具备具体的业务能力，组件类似于游戏卡，用户通过向游戏机中插入不同的游戏卡实现不同的功能，即通过使用不同的组件实现不同的具体业务能力
     actions:       # 自定义执行逻辑，关于actions 的使用，可以参考：https://www.serverless-devs.com/serverless-devs/yaml#行为描述
-      pre-deploy:  # 在s deploy之前自动运行; 
-                   # 1. 如果您使用的是官方公开镜像，请删除/注释pre-deploy部分，这样将跳过构建镜像
-                   # 2. 如果您期望从源码直接构建镜像，则保留pre-deploy部分，这样将执行构建镜像
-        - component: fc build --use-docker --dockerfile ./code/Dockerfile  # 要运行的组件，格式为【component: 组件名 命令 参数】（可以通过s cli registry search --type Component 获取组件列表）
-#        - run: docker build xxx          # 要执行的系统命令，类似于一种钩子的形式
-#          path: ./src                    # 执行系统命令/钩子的路径
-#        - plugin: myplugin               # 与运行的插件 （可以通过s cli registry search --type Plugin 获取组件列表）
-#          args:                          # 插件的参数信息
-#            testKey: testValue
-#      post-deploy: # 在deploy之后运行
-#        - component: fc versions publish # 要运行的命令行
+      # 重要说明!!!
+      # - 根据您选择直接使用官方公开示例镜像、或者从源码构建镜像这2种不同的方式，需要对s.yaml进行一些微调，具体说明如下：
+      #    - 1. 如果您期望直接使用官方公开示例镜像，请删除/注释pre-deploy部分，这样将在s deploy阶段跳过构建镜像，直接进行部署（官网公开示例镜像均为public镜像，无须构建可直接在函数中使用）。
+      #    - 2. 如果您期望从源码构建镜像，则保留pre-deploy部分，这样将在s deploy阶段自动构建镜像，然后进行部署。
+      #pre-deploy:
+      #  - component: fc build --use-docker --dockerfile ./code/Dockerfile  # 要运行的组件，格式为【component: 组件名 命令 参数】（可以通过s cli registry search --type Component 获取组件列表）
     props:
       region: ${vars.region}              # 关于变量的使用方法，可以参考：https://www.serverless-devs.com/serverless-devs/yaml#变量赋值
       service: ${vars.service}
