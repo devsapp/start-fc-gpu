@@ -2,8 +2,6 @@
 
 ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/logo.png?raw=true)
 
-<p align="center"><b> 中文 | <a href="./readme_en.md"> English </a>  </b></p>
-
 ## 本地快速体验
 
 通过该应用，您可以简单快速的创建一个 FC 案例到阿里云函数计算服务。
