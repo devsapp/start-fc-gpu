@@ -24,6 +24,7 @@ Parameters:
     - region
     - serviceName
     - functionName
+    - acrRegistry
   properties:
     region:
       title: 地域
@@ -47,3 +48,10 @@ Parameters:
       type: string
       default: fc-http-gpu-utils-nvidia-smi-function
       description: 函数名称，只能包含字母、数字、下划线和中划线。不能以数字、中划线开头。长度在 1-64 之间
+    acrRegistry:
+      title: 镜像仓库
+      type: string
+      examples: ['registry.cn-beijing.aliyuncs.com/serverless_devs/fc-http-gpu-utils-nvidia-smi:latest']
+      description: 镜像仓库地址；当您期望从源码构建镜像，需要在 https://cr.console.aliyun.com/ 中开通服务、创建仓库以及设置访问凭证; 当您期望快速使用官方镜像，可以根据使用地域填入如下公开镜像 'registry.[cn-beijing|cn-hangzhou|cn-shanghai|cn-shenzhen|ap-northeast-1|us-east-1].aliyuncs.com/serverless_devs/fc-http-gpu-utils-nvidia-smi:latest' 
+      x-acr:
+        type: 'select'
