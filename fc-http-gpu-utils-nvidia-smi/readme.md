@@ -52,10 +52,9 @@
     - 初始化项目：`s init fc-http-gpu-utils-nvidia-smi -d fc-http-gpu-utils-nvidia-smi`   
     - 进入项目，并进行项目部署：`cd fc-http-gpu-utils-nvidia-smi && s deploy -y`
     - 检查函数的镜像加速状态
-        - 方式1：`s cli fc api GetFunction -a default --region cn-shenzhen --path '{"serviceName":"fc-http-gpu-utils-nvidia-smi-service","functionName":"fc-http-gpu-utils-nvidia-smi-function"}'`
-            - 注意：请将如上default帐号、地域、服务名、函数名替换为您的项目实际值
-        - 方式2：登陆阿里云函数计算控制台，查看该函数的详情页面，确保`镜像加速准备状`为`可用`	
-        - 重要说明： ***请务必在镜像加速状态完成后进行函数调用，函数计算平台将基于镜像加速技术为您提供大镜像函数调用的冷启动最佳体验；镜像加速状态完成前的函数调用将遭遇冷启动耗时***：
+        - 方式1：`s cli fc api GetFunction -a default --region cn-shenzhen --path '{"serviceName":"fc-http-gpu-utils-nvidia-smi-service","functionName":"fc-http-gpu-utils-nvidia-smi-function"}'` 注意：请将如上default帐号、地域、服务名、函数名替换为您的项目实际值
+        - 方式2：登陆阿里云函数计算控制台，查看该函数的详情页面，确保`镜像加速准备状态`为`可用`	
+        - ***重要说明：请务必在镜像加速状态完成后进行函数调用，函数计算平台将基于镜像加速技术为您提供大镜像函数调用的冷启动最佳体验；镜像加速状态完成前的函数调用将遭遇冷启动耗时***：
     - 测试项目：
         - 查看GPU实例中所有GPU UUID : `curl -v -X POST "http://fc-httpfunction-fc-http-service-hajpbarcmd.cn-shenzhen.fcapp.run/invoke?mode=list"`
         - 查看GPU实例中所有GPU 详细信息 : `curl -v -X POST "http://fc-httpfunction-fc-http-service-hajpbarcmd.cn-shenzhen.fcapp.run/invoke?mode=details"`
