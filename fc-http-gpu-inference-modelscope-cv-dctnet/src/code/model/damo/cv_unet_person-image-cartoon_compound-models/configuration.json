@@ -1,0 +1,7 @@
+{
+   "framework": "tensorflow",
+   "task": "image-portrait-stylization",
+    "pipeline": {
+       "type": "unet-person-image-cartoon"
+    }
+}
