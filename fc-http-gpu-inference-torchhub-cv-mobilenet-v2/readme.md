@@ -76,8 +76,8 @@
 
 | input | output |
 |  ----  | ----  |
-| ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/dog.jpg?raw=true) | ```{"Egyptian cat":0.02607746794819832,"Persian cat":0.6318033933639526,"lynx":0.15323816239833832,"tabby":0.048527609556913376,"tiger cat":0.06776202470064163}``` |
-| ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/cat.jpg?raw=true) | ```{"Great Pyrenees":0.00988676119595766,"Pomeranian":0.0698879137635231,"Samoyed":0.8303040862083435,"collie":0.01079776231199503,"keeshond":0.012964126653969288}``` |
+| ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/cat.jpg?raw=true) | ```{"Egyptian cat":0.02607746794819832,"Persian cat":0.6318033933639526,"lynx":0.15323816239833832,"tabby":0.048527609556913376,"tiger cat":0.06776202470064163}``` |
+| ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/dog.jpg?raw=true) | ```{"Great Pyrenees":0.00988676119595766,"Pomeranian":0.0698879137635231,"Samoyed":0.8303040862083435,"collie":0.01079776231199503,"keeshond":0.012964126653969288}``` |
 
 - 容器环境说明
 
