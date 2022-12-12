@@ -13,6 +13,8 @@
 ## 包含内容
 
 - ```GPU运行环境检测``` [fc-http-gpu-utils-nvidia-smi](fc-http-gpu-utils-nvidia-smi/src) : s init fc-http-gpu-utils-nvidia-smi 
+- ```快速部署ModelScope DCT-Net人像卡通化模型至阿里云函数计算GPU实例``` [fc-http-gpu-inference-modelscope-cv-dctnet](fc-http-gpu-inference-modelscope-cv-dctnet/src) : s init fc-http-gpu-inference-modelscope-cv-dctnet
+- ```快速部署 PytorchHub Mobilenet v2 推理模型至FC-GPU运行环境``` [fc-http-gpu-inference-torchhub-cv-mobilenet-v2](fc-http-gpu-inference-torchhub-cv-mobilenet-v2) : s init fc-http-gpu-inference-torchhub-cv-mobilenet-v2
 
 ---
 
