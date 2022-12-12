@@ -73,12 +73,14 @@
 
 - Google在2018年提出MobileNetV2模型，该模型是对MobileNetV1的重大改进，推动了移动视觉识别技术的发展，包括分类、对象检测和语义分割。
 - 本应用模板基于MobileNetV2模型实现了图像识别，预训练数据集为ImageNet。
+
 | input | output |
 |  ----  | ----  |
 | ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/dog.jpg?raw=true) | ```{"Egyptian cat":0.02607746794819832,"Persian cat":0.6318033933639526,"lynx":0.15323816239833832,"tabby":0.048527609556913376,"tiger cat":0.06776202470064163}``` |
 | ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/cat.jpg?raw=true) | ```{"Great Pyrenees":0.00988676119595766,"Pomeranian":0.0698879137635231,"Samoyed":0.8303040862083435,"collie":0.01079776231199503,"keeshond":0.012964126653969288}``` |
 
 - 容器环境说明
+
 |  env   |  value  |
 |  ----  | ----  |
 | Container OS | Ubuntu 20.04 |
