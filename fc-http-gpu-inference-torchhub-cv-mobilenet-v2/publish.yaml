@@ -3,7 +3,7 @@ Name: fc-http-gpu-inference-torchhub-cv-mobilenet-v2
 Provider:
   - 阿里云
 Version: 1.1.4
-Description: 快速部署PytorchHub INCEPTION_V3推理模型至FC-GPU运行环境
+Description: 快速部署 PytorchHub Mobilenet v2 推理模型至FC-GPU运行环境
 HomePage: https://github.com/devsapp/start-fc-gpu
 Tags:
   - 函数计算
