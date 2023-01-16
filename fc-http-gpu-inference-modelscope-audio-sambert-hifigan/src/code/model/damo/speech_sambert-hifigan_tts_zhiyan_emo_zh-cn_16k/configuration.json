@@ -1,0 +1,129 @@
+{
+  "framework": "pytorch",
+  "task" : "text-to-speech",
+  "model" : {
+    "type" : "sambert-hifigan",
+    "lang_type" : "zhcn",
+    "sample_rate" : 16000,
+    "am": {
+      "am": {
+        "max_len": 800,
+
+        "embedding_dim": 512, 
+        "encoder_num_layers": 8,
+        "encoder_num_heads": 8,
+        "encoder_num_units": 128,
+        "encoder_ffn_inner_dim": 1024,
+        "encoder_dropout": 0.1,
+        "encoder_attention_dropout": 0.1,
+        "encoder_relu_dropout": 0.1,
+        "encoder_projection_units": 32,
+
+        "speaker_units": 32,
+        "emotion_units": 32,
+
+        "predictor_filter_size": 41,
+        "predictor_fsmn_num_layers": 3,
+        "predictor_num_memory_units": 128,
+        "predictor_ffn_inner_dim": 256,
+        "predictor_dropout": 0.1,
+        "predictor_shift": 0,
+        "predictor_lstm_units": 128,
+        "dur_pred_prenet_units": [128, 128],
+        "dur_pred_lstm_units": 128,
+
+        "decoder_prenet_units": [256, 256],
+        "decoder_num_layers": 12,
+        "decoder_num_heads": 8,
+        "decoder_num_units": 128,
+        "decoder_ffn_inner_dim": 1024,
+        "decoder_dropout": 0.1,
+        "decoder_attention_dropout": 0.1,
+        "decoder_relu_dropout": 0.1,
+
+        "outputs_per_step": 3,
+        "num_mels": 80,
+
+        "postnet_filter_size": 41,
+        "postnet_fsmn_num_layers": 4,
+        "postnet_num_memory_units": 256,
+        "postnet_ffn_inner_dim": 512,
+        "postnet_dropout": 0.1,
+        "postnet_shift": 17,
+        "postnet_lstm_units": 128
+
+      },
+
+      "audio": {
+          "frame_shift_ms": 12.5
+      },
+
+      "linguistic_unit": {
+        "cleaners": "english_cleaners",
+        "lfeat_type_list": "sy,tone,syllable_flag,word_segment,emo_category,speaker_category",
+        "sy": "dict/sy_dict.txt",
+        "tone": "dict/tone_dict.txt",
+        "syllable_flag": "dict/syllable_flag_dict.txt",
+        "word_segment": "dict/word_segment_dict.txt",
+        "emo_category": "dict/emo_category_dict.txt",
+        "speaker_category": "dict/speaker_dict.txt"
+      },
+
+      "num_gpus": 1,
+      "batch_size": 32,
+      "group_size": 1024,
+      "learning_rate": 0.001,
+      "adam_b1": 0.9,
+      "adam_b2": 0.98,
+      "seed": 1234,
+
+      "num_workers": 4,
+
+      "dist_config": {
+          "dist_backend": "nccl",
+          "dist_url": "tcp://localhost:11111",
+          "world_size": 1
+      }
+    },
+    "vocoder" : {
+      "resblock": "1",
+      "num_gpus": 1,
+      "batch_size": 16,
+      "learning_rate": 0.0002,
+      "adam_b1": 0.8,
+      "adam_b2": 0.99,
+      "lr_decay": 0.999,
+      "seed": 1234,
+
+      "upsample_rates": [10,5,2,2],
+      "upsample_kernel_sizes": [20,11,4,4],
+      "upsample_initial_channel": 256,
+      "resblock_kernel_sizes": [3,7,11],
+      "resblock_dilation_sizes": [[1,3,5,7], [1,3,5,7], [1,3,5,7]],
+
+      "segment_size": 6400,
+      "num_mels": 80,
+      "num_freq": 1025,
+      "n_fft": 2048,
+      "hop_size": 200,
+      "win_size": 1000,
+
+      "sampling_rate": 16000,
+
+      "fmin": 0,
+      "fmax": 8000,
+      "fmax_for_loss": null,
+
+      "num_workers": 4,
+
+      "dist_config": {
+          "dist_backend": "nccl",
+          "dist_url": "tcp://localhost:54312",
+          "world_size": 1
+      }
+    }
+  },
+  "pipeline": {
+     "type": "sambert-hifigan-tts"
+  }
+}
