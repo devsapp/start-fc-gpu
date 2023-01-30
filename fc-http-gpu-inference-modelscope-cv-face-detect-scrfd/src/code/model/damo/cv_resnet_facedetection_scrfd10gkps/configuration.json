@@ -1,0 +1,7 @@
+{
+	"framework": "pytorch",
+	"task": "face-detection",
+	"pipeline": {
+		"type": "resnet-face-detection-scrfd10gkps"
+	}
+}
