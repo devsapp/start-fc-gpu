@@ -35,7 +35,7 @@ def initialize():
     return "Function is initialized, request_id: " + request_id + "\n"
 
 
-@app.route('/ping', methods=['POST'])
+@app.route('/ping', methods=['GET'])
 def ping():
     # See FC docs for all the HTTP headers: https://help.aliyun.com/document_detail/179368.html#section-fk2-z5x-am6
     request_id = request.headers.get("x-fc-request-id", "")
