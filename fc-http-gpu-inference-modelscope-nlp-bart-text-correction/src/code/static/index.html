@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <script type="text/javascript">
+      function append_log(msg) {
+	  current  = parseInt(document.getElementById("log").innerHTML);
+	  document.getElementById("log").innerHTML = current + "<br>" + msg;
+      }
+      
+      function invoke_fc(file) {
+	  let xhr = new XMLHttpRequest();
+	  xhr.open('POST', '/invoke', true);
+	  xhr.setRequestHeader("Content-Type", "image/png");
+	  xhr.send(file);
+	  xhr.onload = function() {
+	      if (xhr.status != 200) {
+		  append_log(`Error ${xhr.status}: ${xhr.statusText}`);
+	      } else {
+		  document.getElementById("before").innerHTML = '<img src="' + URL.createObjectURL(file) + '"/>';
+		  document.getElementById("after").innerHTML = '<img src="data:image/png;base64,' + xhr.response + '"/>';
+	      }
+	  };
+	  xhr.onerror = function() {
+	      append_log("Request failed");
+	  };
+      }
+
+      window.onload = function() {
+	  var fileInput = document.getElementById('fileInput');
+	  
+	  fileInput.addEventListener('change', function(e) {
+	      var file = fileInput.files[0];
+	      invoke_fc(file)
+	  });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="header" style="background-color:#FFA500;"><h1 style="margin-bottom:0;">ModelScope on Aliyun Function Compute</h1></div><br/>
+    <div style="font-weight:bold;">ModelScope模型介绍: <a href="https://www.modelscope.cn/models/damo/cv_cspnet_image-object-detection_yolox/summary">实时目标检测-通用领域</a></div><br/>
+    <div>选择头像文件: <input type="file" id="fileInput"></div>
+    <div id="log"></div><br/>
+    <div id="left" style="height:400px;width:50%;float:left;">
+      <h3>原始图片</h3>
+      <div style="display:inline-block;height:200px;width:400%" id="before"></div><br/>
+    </div>
+    <div id="left" style="height:400px;width:50%;float:left;">
+      <h3>推理结果</h3>
+      <div style="display:inline-block;height:200px;width:400%" id="after"></div><br/>
+    </div>
+  </body>
+</html>
+
+<!--
+<div id="player"></div>
+-->
+<!--
+<script src="http://cdn.jsdelivr.net/npm/xgplayer/browser/index.js" charset="utf-8"></script>
+<script src="http://cdn.jsdelivr.net/npm/xgplayer-flv.js/browser/index.js" charset="utf-8"></script>
+<script type="text/javascript">
+    new window.FlvJsPlayer({
+        id: 'player',
+        isLive: false,
+        playsinline: true,
+        url: 'https://cri-zbtsehbrr87awciq-registry.oss-cn-shenzhen.aliyuncs.com/output.flv',
+        autoplay: true,
+        height: 300,//window.innerHeight,
+        width: 500,//window.innerWidth
+    });
+</script>
+-->
+<!--
+<video src="https://dapeng-fc-test.oss-cn-shanghai.aliyuncs.com/output.mp4" controls="controls" height=300 width=500>
+-->
+
+<!--
+<br/>
+<video src="ffmpeg/materials/t/input.mp4" controls="controls">
+您的浏览器不支持 video 标签。
+</video>
+<br/>
+<video src="http://dapeng-fc-test.oss-cn-shanghai.aliyuncs.com/output.mp4" controls="controls">
+您的浏览器不支持 video 标签。
+</video>
+<br/>
+<!--
