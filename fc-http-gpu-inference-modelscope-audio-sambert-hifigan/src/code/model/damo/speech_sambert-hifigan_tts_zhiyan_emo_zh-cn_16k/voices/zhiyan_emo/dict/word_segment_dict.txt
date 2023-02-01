@@ -1,5 +1,0 @@
-word_begin
-word_end
-word_middle
-word_both
-word_none

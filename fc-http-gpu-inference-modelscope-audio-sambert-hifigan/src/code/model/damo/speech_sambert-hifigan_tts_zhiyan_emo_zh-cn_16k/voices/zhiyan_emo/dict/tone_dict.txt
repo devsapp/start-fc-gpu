@@ -1,7 +1,0 @@
-tone1
-tone_none
-tone4
-tone2
-tone3
-tone5
-tone0
