@@ -51,6 +51,14 @@ def invoke():
     data = ""
 
     try:
+        text = request.get_data().decode("utf-8")
+        print(text)
+
+        result = correct_pipeline(text)
+
+        msg = json.dumps(results, ensure_ascii=False)
+        print(msg)
+
     except Exception as e:
         exc_info = sys.exc_info()
         trace = traceback.format_tb(exc_info[2])
@@ -63,7 +71,7 @@ def invoke():
         return errRet, 404, [("x-fc-status", "404")]
 
     print("FC Invoke End RequestId: " + request_id)
-    return Response(data, mimetype="image/png")
+    return msg, 200, [("Content-Type", "text/plain")]
 
 
 if __name__ == "__main__":
