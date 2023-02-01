@@ -1,0 +1,4 @@
+log:
+  enable: true
+  level: DEBUG
+server: http://paddlepaddle.org.cn/paddlehub
