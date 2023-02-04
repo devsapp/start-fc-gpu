@@ -19,11 +19,8 @@ def initialize():
     request_id = request.headers.get("x-fc-request-id", "")
     print("FC Initialize Start RequestId: " + request_id)
 
-    # do your things
-    # Use the following code to get temporary credentials
-    # access_key_id = request.headers['x-fc-access-key-id']
-    # access_key_secret = request.headers['x-fc-access-key-secret']
-    # access_security_token = request.headers['x-fc-security-token']
+    # do your things: pre-warm-up paddleocr 
+    ping()
 
     print("FC Initialize End RequestId: " + request_id)
     return "Function is initialized, request_id: " + request_id + "\n"
