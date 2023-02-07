@@ -12,5 +12,6 @@ RUN pip install paddlehub -i https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install "paddleocr>=2.0.1" -i https://pypi.tuna.tsinghua.edu.cn/simple
 ENV HUB_HOME=/usr/src/app/hub_home
 COPY . .
+COPY .paddleocr /root/.paddleocr
 CMD [ "python3", "-u", "/usr/src/app/app.py" ]
 EXPOSE 9000
