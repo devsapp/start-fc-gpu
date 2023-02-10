@@ -44,6 +44,70 @@ def ping():
     return "Ping OK\n"
 
 
+@app.route('/benchmark', methods=['GET'])
+def benchmark():
+    # See FC docs for all the HTTP headers: https://help.aliyun.com/document_detail/179368.html#section-fk2-z5x-am6
+    request_id = request.headers.get("x-fc-request-id", "")
+    print("FC Ping Start RequestId: " + request_id)
+
+    # do your things
+    img_path = [
+        './test/ppocr_img/imgs_en/254.jpg',
+        './test/ppocr_img/imgs_en/img623.jpg',
+        './test/ppocr_img/imgs_en/img_10.jpg',
+        './test/ppocr_img/imgs_en/img_11.jpg',
+        './test/ppocr_img/imgs_en/img_12.jpg',
+        './test/ppocr_img/imgs_en/img_195.jpg',
+        './test/ppocr_img/imgs_en/model_prod_flow_en.png',
+        './test/ppocr_img/imgs/00006737.jpg',
+        './test/ppocr_img/imgs/00009282.jpg',
+        './test/ppocr_img/imgs/00015504.jpg',
+        './test/ppocr_img/imgs/00018069.jpg',
+        './test/ppocr_img/imgs/00056221.jpg',
+        './test/ppocr_img/imgs/00057937.jpg',
+        './test/ppocr_img/imgs/00059985.jpg',
+        './test/ppocr_img/imgs/00077949.jpg',
+        './test/ppocr_img/imgs/00111002.jpg',
+        './test/ppocr_img/imgs/00207393.jpg',
+        './test/ppocr_img/imgs/1.jpg',
+        './test/ppocr_img/imgs/11.jpg',
+        './test/ppocr_img/imgs/12.jpg',
+        './test/ppocr_img/imgs/french_0.jpg',
+        './test/ppocr_img/imgs/ger_1.jpg',
+        './test/ppocr_img/imgs/ger_2.jpg',
+        './test/ppocr_img/imgs/japan_1.jpg',
+        './test/ppocr_img/imgs/japan_2.jpg',
+        './test/ppocr_img/imgs/korean_1.jpg',
+        './test/ppocr_img/imgs/model_prod_flow_ch.png',
+        './test/ppocr_img/imgs_words/ch/word_1.jpg',
+        './test/ppocr_img/imgs_words/ch/word_2.jpg',
+        './test/ppocr_img/imgs_words/ch/word_3.jpg',
+        './test/ppocr_img/imgs_words/ch/word_4.jpg',
+        './test/ppocr_img/imgs_words/ch/word_5.jpg',
+        './test/ppocr_img/imgs_words/en/word_1.png',
+        './test/ppocr_img/imgs_words/en/word_2.png',
+        './test/ppocr_img/imgs_words/en/word_3.png',
+        './test/ppocr_img/imgs_words/en/word_4.png',
+        './test/ppocr_img/imgs_words/en/word_5.png',
+        './test/ppocr_img/table/1.png',
+        './test/ppocr_img/table/layout.jpg',
+        './test/ppocr_img/table/paper-image.jpg',
+        './test/ppocr_img/table/pipeline_en.jpg',
+        './test/ppocr_img/table/pipeline.jpg',
+        './test/ppocr_img/table/ppstructure.GIF',
+        './test/ppocr_img/table/result_all.jpg',
+        './test/ppocr_img/table/result_text.jpg',
+        './test/ppocr_img/table/table.jpg',
+        './test/ppocr_img/table/tableocr_pipeline_en.jpg',
+        './test/ppocr_img/table/tableocr_pipeline.jpg'
+    ]
+    for idx in range(len(img_path)):
+        result = ocr.ocr(img_path[idx], cls=True)
+
+    print("FC Ping End RequestId: " + request_id)
+    return "Ping OK\n"
+
+
 @app.route('/invoke', methods=['POST'])
 def invoke():
     # See FC docs for all the HTTP headers: https://help.aliyun.com/document_detail/179368.html#section-fk2-z5x-am6
