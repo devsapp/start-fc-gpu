@@ -1,0 +1,70 @@
+# ------------------------------------
+#   If you need English case, you can refer to [s_en.yaml] file
+# ------------------------------------
+#   欢迎您使用阿里云函数计算 FC 组件进行项目开发
+#   组件仓库地址：https://github.com/devsapp/fc
+#   组件帮助文档：https://www.serverless-devs.com/fc/readme
+#   Yaml参考文档：https://www.serverless-devs.com/fc/yaml/readme
+#   关于：
+#      - Serverless Devs和FC组件的关系、如何声明/部署多个函数、超过50M的代码包如何部署
+#      - 关于.fcignore使用方法、工具中.s目录是做什么、函数进行build操作之后如何处理build的产物
+#   等问题，可以参考文档：https://www.serverless-devs.com/fc/tips
+#   关于如何做CICD等问题，可以参考：https://www.serverless-devs.com/serverless-devs/cicd
+#   关于如何进行环境划分等问题，可以参考：https://www.serverless-devs.com/serverless-devs/extend
+#   更多函数计算案例，可参考：https://github.com/devsapp/awesome/
+#   有问题快来钉钉群问一下吧：33947367
+# ------------------------------------
+edition: 1.0.0
+name: fc-event-gpu-training-pytorch-neural-network
+# access 是当前应用所需要的密钥信息配置：
+# 密钥配置可以参考：https://www.serverless-devs.com/serverless-devs/command/config
+# 密钥使用顺序可以参考：https://www.serverless-devs.com/serverless-devs/tool#密钥使用顺序与规范
+access: "{{ access }}"
+
+vars: # 全局变量
+  region: "{{ region }}"
+  service:
+    name: "{{ serviceName }}"
+    description: "This is a PyTorch neural network training example"
+    logConfig: auto
+
+services:
+  fc-gpu: # 业务名称/模块名称
+    component:  fc # 组件名称，Serverless Devs 工具本身类似于一种游戏机，不具备具体的业务能力，组件类似于游戏卡，用户通过向游戏机中插入不同的游戏卡实现不同的功能，即通过使用不同的组件实现不同的具体业务能力
+    actions:       # 自定义执行逻辑，关于actions 的使用，可以参考：https://www.serverless-devs.com/serverless-devs/yaml#行为描述
+      # 重要说明!!!
+      # - 根据您选择直接使用官方公开示例镜像、或者从源码构建镜像这2种不同的方式，需要对s.yaml进行一些微调，具体说明如下：
+      #    - 1. 如果您期望直接使用官方公开示例镜像，请删除/注释pre-deploy部分，这样将在s deploy阶段跳过构建镜像，直接进行部署（官网公开示例镜像均为public镜像，无须构建可直接在函数中使用）。
+      #    - 2. 如果您期望从源码构建镜像，则保留pre-deploy部分，这样将在s deploy阶段自动构建镜像，然后进行部署。
+      #pre-deploy:
+      #  - component: fc build --use-docker --dockerfile ./code/Dockerfile  # 要运行的组件，格式为【component: 组件名 命令 参数】（可以通过s cli registry search --type Component 获取组件列表）
+    props:
+      region: ${vars.region}              # 关于变量的使用方法，可以参考：https://www.serverless-devs.com/serverless-devs/yaml#变量赋值
+      service: ${vars.service}
+      function:
+        name: "{{ functionName }}"
+        description: "This is a PyTorch neural network training example"
+        instanceType: fc.gpu.ampere.1
+        memorySize: 10240
+        gpuMemorySize: 17408
+        cpu: 5
+        diskSize: 512
+        timeout: 300
+        runtime: custom-container
+        customContainerConfig:
+          image: "{{ acrRegistry }}"
+          webServerMode: false
+#  next-function: # 第二个函数的案例，仅供参考
+#    # 如果在当前项目下执行 s deploy，会同时部署模块：
+#    #   helloworld：服务hello-world-service，函数cpp-event-function
+#    #   next-function：服务hello-world-service，函数next-function-example
+#    # 如果想单独部署当前服务与函数，可以执行 s + 模块名/业务名 + deploy，例如：s next-function deploy
+#    # 如果想单独部署当前函数，可以执行 s + 模块名/业务名 + deploy function，例如：s next-function deploy function
+#    # 更多命令可参考：https://www.serverless-devs.com/fc/readme#文档相关
+#    component: fc
+#    props:
+#      region: ${vars.region}
+#      service: ${vars.service} # 应用整体的服务配置
+#      function: # 定义一个新的函数
+#        name: next-function-example
+#        description: 'hello world by serverless devs'

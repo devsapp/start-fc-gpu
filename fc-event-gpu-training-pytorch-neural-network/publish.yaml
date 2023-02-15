@@ -1,0 +1,57 @@
+Type: Application
+Name: fc-event-gpu-training-pytorch-neural-network
+Provider:
+  - 阿里云
+Version: 0.0.1
+Description: 快速部署PyTorch神经网络模型训练至阿里云函数计算GPU实例并使用A10卡型
+HomePage: https://github.com/devsapp/start-fc-gpu
+Tags:
+  - 函数计算
+  - 新手入门
+  - 人工智能
+  - GPU
+Category: 人工智能
+Service:
+  函数计算:
+    Authorities:
+      - AliyunFCFullAccess
+      - AliyunContainerRegistryFullAccess
+    Runtime: custom container
+Parameters:
+  type: object
+  additionalProperties: false # 不允许增加其他属性
+  required: # 必填项
+    - region
+    - serviceName
+    - functionName
+    - acrRegistry
+  properties:
+    region:
+      title: 地域
+      type: string
+      default: cn-shenzhen
+      description: 创建应用所在的地区
+      enum:
+        - cn-beijing
+        - cn-hangzhou
+        - cn-shanghai
+        - cn-shenzhen
+        - ap-northeast-1
+        - us-east-1
+    serviceName:
+      title: 服务名
+      type: string
+      default: fc-event-gpu-training-pytorch-neural-network-service
+      description: 服务名称，只能包含字母、数字、下划线和中划线。不能以数字、中划线开头。长度在 1-128 之间
+    functionName:
+      title: 函数名
+      type: string
+      default: fc-event-gpu-training-pytorch-neural-network-function
+      description: 函数名称，只能包含字母、数字、下划线和中划线。不能以数字、中划线开头。长度在 1-64 之间
+    acrRegistry:
+      title: 镜像仓库
+      type: string
+      examples: ['registry.cn-beijing.aliyuncs.com/serverless_devs/fc-event-gpu-trianing-pytorch-neural-network:latest']
+      description: 镜像仓库地址；当您期望从源码构建镜像，需要在 https://cr.console.aliyun.com/ 中开通服务、创建仓库以及设置访问凭证; 当您期望快速使用官方公开示例镜像，可以根据使用地域填入如下公开镜像地址 'registry.[cn-beijing|cn-hangzhou|cn-shanghai|cn-shenzhen|ap-northeast-1|us-east-1].aliyuncs.com/serverless_devs/fc-event-gpu-training-pytorch-neural-network:latest' 
+      x-acr:
+        type: 'select'
