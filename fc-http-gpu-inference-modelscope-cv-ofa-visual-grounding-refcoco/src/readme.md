@@ -49,7 +49,7 @@
 
 - 通过 [Serverless Devs Cli](https://www.serverless-devs.com/serverless-devs/install) 进行部署：
     - [安装 Serverless Devs Cli 开发者工具](https://www.serverless-devs.com/serverless-devs/install) ，并进行[授权信息配置](https://www.serverless-devs.com/fc/config) ；
-    - 初始化项目：`s init ffc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoc -d ffc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoc2`
+    - 初始化项目：`s init fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco -d fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco`
     - 进入项目，并进行项目部署：`cd fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco && s deploy -y`
     - 检查函数的镜像加速状态:
         - 方式1：`s cli fc api GetFunction -a default --region cn-shenzhen --path '{"serviceName":"fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco-service","functionName":"fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco-function"}'` 注意：请将如上default帐号、地域、服务名、函数名替换为
@@ -71,6 +71,8 @@
 </deploy>
 
 <appdetail id="flushContent">
+
+# 应用详情
 
 - OFA(One-For-All)是通用多模态预训练模型，使用简单的序列到序列的学习框架统一模态（跨模态、视觉、语言等模态）和任务（如图片生成、视觉定位、图片描述、图片分类、文本生成等），详见ICML 2022 OFA论文：https://arxiv.org/abs/2202.03052
 - 本应用模板基于OFA模型实现了图像语义与视觉定位，预训练数据集为Refcoco。
