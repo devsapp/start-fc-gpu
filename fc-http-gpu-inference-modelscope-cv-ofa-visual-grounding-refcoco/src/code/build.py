@@ -1,5 +1,6 @@
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
+from modelscope.hub.snapshot_download import snapshot_download
 
-# Download the model files to the local cache
-pipeline(Tasks.visual_grounding, model='damo/ofa_visual-grounding_refcoco_large_en')
+# Download model
+snapshot_download('damo/ofa_visual-grounding_refcoco_large_en', cache_dir='/tmp/model', revision='v1.0.0')

@@ -14,7 +14,7 @@ import json
 
 
 app = Flask(__name__)
-ofa_pipe = pipeline(Tasks.visual_grounding, model='damo/ofa_visual-grounding_refcoco_large_en', preprocessor=None)
+ofa_pipe = pipeline(Tasks.visual_grounding, model='./model/damo/ofa_visual-grounding_refcoco_large_en', preprocessor=None)
 
 
 @app.route('/initialize', methods=['POST'])

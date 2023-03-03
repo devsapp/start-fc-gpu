@@ -2,7 +2,7 @@ Type: Application
 Name: fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco
 Provider:
   - 阿里云
-Version: 1.0.1
+Version: 1.0.3
 Description: 快速部署 ModelScope OFA Visual Grounding Large-EN 推理模型至FC-GPU运行环境
 HomePage: https://github.com/devsapp/start-fc-gpu
 Tags:
