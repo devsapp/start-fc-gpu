@@ -46,7 +46,7 @@ services:
         caPort: 9000
         instanceType: fc.gpu.ampere.1
         gpuMemorySize: 8192
-        memorySize: 4096
+        memorySize: 8192
         cpu: 2
         diskSize: 10240
         timeout: 600
