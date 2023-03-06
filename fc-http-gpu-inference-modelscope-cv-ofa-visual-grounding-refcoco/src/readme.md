@@ -2,7 +2,6 @@
 > 注：当前项目为 Serverless Devs 应用，由于应用中会存在需要初始化才可运行的变量（例如应用部署地区、服务名、函数名等等），所以**不推荐**直接 Clone 本仓库到本地进行部署或直接复制 s.yaml 使用，**强烈推荐**通过 `s init ` 的方法或应用中心进行初始化，详情可参考[部署 & 体验](#部署--体验) 。
 
 # fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco 帮助文档
-
 <p align="center" class="flex justify-center">
     <a href="https://www.serverless-devs.com" class="ml-1">
     <img src="http://editor.devsapp.cn/icon?package=fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco&type=packageType">
@@ -39,6 +38,8 @@
 
 <service>
 
+
+
 | 服务 |  备注  |
 | --- |  --- |
 | 函数计算 FC |  用于创建FC服务与函数 |
@@ -49,6 +50,8 @@
 推荐您拥有以下的产品权限 / 策略：
 <auth>
 
+
+
 | 服务/业务 |  权限 |  备注  |
 | --- |  --- |   --- |
 | 函数计算 | AliyunFCFullAccess |  用于创建FC服务与函数 |
@@ -58,8 +61,7 @@
 
 <remark>
 
-您还需要注意：   
-无
+
 
 </remark>
 
@@ -79,9 +81,12 @@
    
 </appcenter>
 <deploy>
-
-详见使用文档
-
+    
+- 通过 [Serverless Devs Cli](https://www.serverless-devs.com/serverless-devs/install) 进行部署：
+  - [安装 Serverless Devs Cli 开发者工具](https://www.serverless-devs.com/serverless-devs/install) ，并进行[授权信息配置](https://docs.serverless-devs.com/fc/config) ；
+  - 初始化项目：`s init fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco -d fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco `
+  - 进入项目，并进行项目部署：`cd fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco && s deploy - y`
+   
 </deploy>
 
 ## 应用详情
@@ -114,25 +119,77 @@
 
 <usedetail id="flushContent">
 
-- 通过 [Serverless Devs Cli](https://www.serverless-devs.com/serverless-devs/install) 进行部署：
-    - [安装 Serverless Devs Cli 开发者工具](https://www.serverless-devs.com/serverless-devs/install) ，并进行[授权信息配置](https://www.serverless-devs.com/fc/config) ；
-    - 初始化项目：`s init fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco -d fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco`
-    - 进入项目，并进行项目部署：`cd fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco && s deploy -y`
-    - 检查函数的镜像加速状态:
-        - 方式1：`s cli fc api GetFunction -a default --region cn-shenzhen --path '{"serviceName":"fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco-service","functionName":"fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco-function"}'` 注意：请将如上default帐号、地域、服务名、函数名替换为
-您的项目实际值
-        - 方式2：登陆阿里云函数计算控制台，查看该函数的详情页面，确保`镜像加速准备状态`为`可用`
-        - ***重要说明：请务必在镜像加速状态完成后进行函数调用，函数计算平台将基于镜像加速技术为您提供大镜像函数调用的冷启动最佳体验；镜像加速状态完成前的函数调用将遭遇冷启动耗时***：
-    - 测试项目：
-        - 通过脚本调用
-            - ```python3 ./test/client.py http://{your_function_http_endpoint}/invoke ./test/imgs/visual_grounding.png "a blue turtle-like pokemon with round head"```
-            - ```python3 ./test/client.py http://{your_function_http_endpoint}/invoke ./test/imgs/suitcases.png "a white suitcases"```
-            - ```python3 ./test/client.py http://{your_function_http_endpoint}/invoke ./test/imgs/suitcases.png "a green suitcases```
+## 通过应用中心部署
 
-- 根据您选择直接使用官方公开示例镜像、或者从源码构建镜像这2种不同的方式，需要对s.yaml进行一些微调，具体说明如下：
+通过应用中心部署完函数之后，可以在应用的具体环境页面，查看到应用的函数资源：
+
+![](http://image.editor.devsapp.cn/evBw7lh8ktv6xDBzSSzvjr1ykchAF9hG41gf1ek1sk8tr4355A/FZa954tvfbe42G9j2qkw.png)
+
+通过函数资源对应的函数链接，可以查看到函数的endpoint地址：
+
+![](http://image.editor.devsapp.cn/evBw7lh8ktv6xDBzSSzvjr1ykchAF9hG41gf1ek1sk8tr4355A/cgzyhg9aFae5avCrrryd.png)
+
+
+根据此地址，可以进行函数的调用等操作，测试脚本为：
+
+```python
+# test.py
+import sys
+import requests
+
+def main(url, path, text):
+    image = open(path, "rb").read()
+    params = {"text": text}
+    resp = requests.post(url,
+                         data = image,
+                         headers = {'Content-Type': 'application/octet-stream'},
+                         params = params)
+    open("output.png", "wb").write(resp.content)
+    print("infernece ok, please check output.png")
+
+
+if __name__ == "__main__":
+    # eg1: python3 ./test/client.py http://127.0.0.1:9000/invoke ./test/imgs/visual_grounding.png "a blue turtle-like pokemon with round head"
+    # eg2: python3 ./test/client.py http://127.0.0.1:9000/invoke ./test/imgs/suitcases.png "a white suitcases"
+    # eg3: python3 ./test/client.py http://127.0.0.1:9000/invoke ./test/imgs/suitcases.png "a green suitcases"
+
+    if len(sys.argv) != 4:
+        sys.exit("Usage: client.py <request url> <image path> <query text>")
+    main(sys.argv[1], sys.argv[2], sys.argv[3])
+
+```
+
+可以通过执行命令进行测试：
+- ```python3 ./test.py http://{your_function_http_endpoint}/invoke ./{测试图片本地路径} "a blue turtle-like pokemon with round head"```    
+- ```python3 ./test.py http://{your_function_http_endpoint}/invoke ./{测试图片本地路径}  "a white suitcases"```
+ - ```python3 ./test.py http://{your_function_http_endpoint}/invoke ./{测试图片本地路径}  "a green suitcases```
+
+
+
+## 通过 Serverless Devs 本地部署
+
+通过 Serverless Devs 开发者工具，本地部署应用之后，可以进行几个额外工作：
+
+1. 开启镜像加速，有助于缓解函数冷启动。检查函数的镜像加速状态:
+    - 方式1：`s cli fc api GetFunction -a default --region cn-shenzhen --path '{"serviceName":"fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco-service","functionName":"fc-http-gpu-inference-modelscope-cv-ofa-visual-grounding-refcoco-function"}'` 注意：请将如上default帐号、地域、服务名、函数名替换为您的项目实际值
+
+    - 方式2：登陆阿里云函数计算控制台，查看该函数的详情页面，确保`镜像加速准备状态`为`可用`
+
+> ***重要说明：请务必在镜像加速状态完成后进行函数调用，函数计算平台将基于镜像加速技术为您提供大镜像函数调用的冷启动最佳体验；镜像加速状态完成前的函数调用将遭遇冷启动耗时***：
+> - 测试项目：
+>     - 通过脚本调用
+>         - ```python3 ./test/client.py http://{your_function_http_endpoint}/invoke ./test/imgs/visual_grounding.png "a blue turtle-like pokemon with round head"```    
+>         - ```python3 ./test/client.py http://{your_function_http_endpoint}/invoke ./test/imgs/suitcases.png "a white suitcases"```
+>         - ```python3 ./test/client.py http://{your_function_http_endpoint}/invoke ./test/imgs/suitcases.png "a green suitcases```
+
+根据您选择直接使用官方公开示例镜像、或者从源码构建镜像这2种不同的方式，需要对s.yaml进行一些微调，具体说明如下：
     1. 如果您期望直接使用官方公开示例镜像，请删除或注释actions子配置，这样将在s deploy阶段跳过构建镜像，直接进行部署（官网公开示例镜像均为public镜像，无须构建可直接在函数中使用）。
     2. 如果您期望从源码构建镜像，则保留actions子配置，这样将在s deploy阶段自动构建镜像，然后进行部署。
     - ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/s_yaml_config.png?raw=true)
+
+
+
+
 
 </usedetail>
 
