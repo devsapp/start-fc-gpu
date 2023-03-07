@@ -100,7 +100,7 @@
 * ***后端应用***：
    * 定时器周期性触发，基于RDS中的商品用户评价数据，对每条评价进行情感分析打分。
    * 模型使用TweetEval社交媒体情感分析文本数据，在BERT预训练模型上进行微调，贴合上下游商品评价的情感分类能力。
-* *** 前端应用***：
+* ***前端应用***：
    * HTTP触发器，用户可通过HTTP请求查看后端周期性更新的用户评价数据，其中包含了可视化的评论情感打分。
 
 ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/sentiment_analysis_show.png?raw=true)
@@ -130,7 +130,7 @@
 
 通过函数资源对应的函数链接，后端应用函数可以查看&调整定时器触发配置：
 
-![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/sentiment_analysis_timer?raw=true)
+![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/sentiment_analysis_timer.png?raw=true)
 
 通过函数资源对应的函数链接，前端应用函数可以查看到HTTP endpoint地址并进行调用：
 
@@ -147,9 +147,9 @@
 
 > ***重要说明：请务必在镜像加速状态完成后进行函数调用，函数计算平台将基于镜像加速技术为您提供大镜像函数调用的冷启动最佳体验；镜像加速状态完成前的函数调用将遭遇冷启动耗时***：
 
-根据您选择直接使用官方公开示例镜像、或者从源码构建镜像这2种不同的方式，需要对s.yaml进行一些微调，具体说明如下：
-    1. 如果您期望直接使用官方公开示例镜像，请删除或注释actions子配置，这样将在s deploy阶段跳过构建镜像，直接进行部署（官网公开示例镜像均为public镜像，无须构建可直接在函数中使用）。
-    2. 如果您期望从源码构建镜像，则保留actions子配置，这样将在s deploy阶段自动构建镜像，然后进行部署。
+2. 根据您选择直接使用官方公开示例镜像、或者从源码构建镜像这2种不同的方式，需要对s.yaml进行一些微调，具体说明如下：
+    - 方式1：如果您期望直接使用官方公开示例镜像，请删除或注释actions子配置，这样将在s deploy阶段跳过构建镜像，直接进行部署（官网公开示例镜像均为public镜像，无须构建可直接在函数中使用）。
+    - 方式2：如果您期望从源码构建镜像，则保留actions子配置，这样将在s deploy阶段自动构建镜像，然后进行部署。
     - ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/s_yaml_config.png?raw=true)
 
 
