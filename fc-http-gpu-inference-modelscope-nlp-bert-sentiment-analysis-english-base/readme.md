@@ -97,10 +97,11 @@
 
 ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/sentiment_analysis_arch.png?raw=true)
 
-* 后端应用：定时器周期性触发，基于RDS中的商品用户评价数据，对每条评价进行情感分析打分。
-* 前端应用：HTTP触发器，用户可通过HTTP请求查看后端周期性更新的用户评价数据，其中包含了可视化的评论情感打分。
-
-- 模型使用TweetEval社交媒体情感分析文本数据，在BERT预训练模型上进行微调，贴合上下游商品评价的情感分类能力。
+* ***后端应用***：
+   * 定时器周期性触发，基于RDS中的商品用户评价数据，对每条评价进行情感分析打分。
+   * 模型使用TweetEval社交媒体情感分析文本数据，在BERT预训练模型上进行微调，贴合上下游商品评价的情感分类能力。
+* *** 前端应用***：
+   * HTTP触发器，用户可通过HTTP请求查看后端周期性更新的用户评价数据，其中包含了可视化的评论情感打分。
 
 ![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/sentiment_analysis_show.png?raw=true)
 
@@ -127,7 +128,11 @@
 
 ![](http://image.editor.devsapp.cn/evBw7lh8ktv6xDBzSSzvjr1ykchAF9hG41gf1ek1sk8tr4355A/FZa954tvfbe42G9j2qkw.png)
 
-通过函数资源对应的函数链接，可以查看到函数的endpoint地址：
+通过函数资源对应的函数链接，后端应用函数可以查看&调整定时器触发配置：
+
+![图片alt](https://github.com/devsapp/start-fc-gpu/blob/main/materials/sentiment_analysis_timer?raw=true)
+
+通过函数资源对应的函数链接，前端应用函数可以查看到HTTP endpoint地址并进行调用：
 
 ![](http://image.editor.devsapp.cn/evBw7lh8ktv6xDBzSSzvjr1ykchAF9hG41gf1ek1sk8tr4355A/cgzyhg9aFae5avCrrryd.png)
 
