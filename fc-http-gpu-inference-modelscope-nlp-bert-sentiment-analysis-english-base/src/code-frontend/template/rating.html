@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <style>
+      #customers
+      {
+	  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	  width:100%;
+	  border-collapse:collapse;
+      }
+      #customers td, #customers th 
+      {
+	  font-size:0.8em;
+	  border:1px solid #98bf21;
+	  padding:3px 7px 2px 7px;
+      }
+      #customers th 
+      {
+	  font-size:1.1em;
+	  text-align:left;
+	  padding-top:5px;
+	  padding-bottom:4px;
+	  background-color:#A7C942;
+	  color:#ffffff;
+      }
+      #customers tr.alt td 
+      {
+	  color:#000000;
+	  background-color:#EAF2D3;
+      }
+
+      #rating
+      {
+	  font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+	  width:100%;
+	  border-collapse:collapse;
+      }
+      #rating td, #customers th 
+      {
+	  font-size:0.8em;
+	  border: 0px solid #98bf21;
+	  padding:2px 4px 2px 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <table id="customers">
+      <tr>
+        <th style="width:5%"> comment_id </th>
+	<th style="width:5%"> user_id </th>
+	<th style="width:5%"> product_id </th>
+	<th style="width:50%"> comment_content </th>
+	<th style="width:35%"> comment_rating </th>
+      </tr>
+      {% for item in data %}
+      <tr>
+	<td>{{item[0]}}</td>
+	<td>{{item[1]}}</td>
+	<td>{{item[2]}}</td>
+	<td>{{item[4]}}</td>
+	<td>
+	  <table id="rating">
+	    <tr>
+	      <th style="width:90%">Prediction Types</th>
+	      <th style="width:10%">Probability</th>
+	    </tr>
+	    <tr>
+	      <td colspan="2"><div style="height:5px; width:{{item[5]}}%; background-image:linear-gradient(to right,green,white);" /></td>
+	    </tr>
+	    <tr>
+	      <td>Positive</td>
+	      <td>{{item[5]}}</td>
+	    </tr>
+	    <tr>
+	      <td colspan="2"><div style="height:5px; width:{{item[6]}}%; background-image:linear-gradient(to right,green,white);" /></td>	      
+	    </tr>
+	    <tr>
+	      <td>Neutral</td>
+	      <td>{{item[6]}}</td>
+	    </tr>
+	    <tr>
+	      <td colspan="2"><div style="height:5px; width:{{item[7]}}%; background-image:linear-gradient(to right,red,white);" /></td>	      	      
+	    </tr>
+	    <tr>
+	      <td>Negative</td>
+	      <td>{{item[7]}}</td>
+	    </tr>
+	  </table>
+	</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
