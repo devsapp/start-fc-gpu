@@ -4,6 +4,7 @@ from flask import Response
 from modelscope.outputs import OutputKeys
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
+import tablestore
 import os
 import cv2
 import base64
@@ -14,9 +15,22 @@ import json
 import pymysql
 
 
+# init flask
 app = Flask(__name__)
+
+
+# init model
 semantic_cls = pipeline(Tasks.text_classification,
                         model = './model/damo/nlp_bert_sentiment-analysis_english-base')
+
+
+# init ots
+ots_endpoint = os.environ['OTS_ENDPOINT']
+ots_ak_id = os.environ['OTS_AK_ID']
+ots_ak_secret = os.environ['OTS_AK_SECRET']
+ots_instance = os.environ['OTS_INSTANCE']
+ots_table = "mall_comments_mock"
+ots_client = tablestore.OTSClient(ots_endpoint, ots_ak_id, ots_ak_secret, ots_instance, logger_name = 'table_store.log')
 
 
 @app.route('/initialize', methods=['POST'])
@@ -58,19 +72,15 @@ def invoke():
 
     try:
         for item in data:
-            id = item[0]
-            user_id = item[1]
-            product_id = item[2]
-            comment_timestamp = item[3]
-            comment_content = item[4]
+            product_id = item.primary_key[0][1]
+            user_id = item.primary_key[1][1]
+            comment_content = item.attribute_columns[0][1]
             rating = semantic_cls(comment_content)
-            print("id=", id,
+            print("product_id=", product_id,
                   "user_id=", user_id,
-                  "product_id=", product_id,
-                  "comment_timestamp=", comment_timestamp,
                   "comment_content[INPUT]=", comment_content,
-                  "rating[OUTPUT]=", rating)
-            update_rating(id, rating)
+                  "rating[OUTPUT]=", rating, "\n")
+            update_rating(product_id, user_id, comment_content, rating)
 
         msg = json.dumps(data, ensure_ascii=False, default=str)
 
@@ -89,35 +99,36 @@ def invoke():
     return msg, 200, [("Content-Type", "text/plain")]
 
 
-def fetch_db_conn():
-    try:
-        conn = pymysql.connect(
-            host = os.environ['MYSQL_HOST'],       # 替换为您的HOST名称。
-            port = int(os.environ['MYSQL_PORT']),  # 替换为您的端口号。
-            user = os.environ['MYSQL_USER'],       # 替换为您的用户名。
-            passwd = os.environ['MYSQL_PASSWORD'], # 替换为您的用户名对应的密码。
-            db = os.environ['MYSQL_DBNAME'],       # 替换为您的数据库名称。
-            connect_timeout = 5)
-        return conn
-    except Exception as e:
-        logger.error(e)
-        logger.error(
-            "ERROR: Unexpected error: Could not connect to MySql instance.")
-        raise Exception(str(e))
-
-
 def fetch_dataset():
-    conn = fetch_db_conn()
+    inclusive_start_primary_key = [('product_id', tablestore.INF_MIN), ('user_id', tablestore.INF_MIN)]
+    exclusive_end_primary_key = [('product_id', tablestore.INF_MAX), ('user_id', tablestore.INF_MAX)]
+    columns_to_get = []
+    limit = 1000
     try:
-        with conn.cursor() as cursor:
-            cursor.execute("SELECT * FROM product_comment_tbl")
-            result = cursor.fetchall()
-            return result
-    finally:
-        conn.close()
+        consumed, next_start_primary_key, row_list, next_token = ots_client.get_range(
+            ots_table, tablestore.Direction.FORWARD,
+            inclusive_start_primary_key, exclusive_end_primary_key,
+            columns_to_get, limit, max_version = 1)
+        all_rows = []
+        all_rows.extend(row_list)
+
+        while next_start_primary_key is not None:
+            inclusive_start_primary_key = next_start_primary_key
+            consumed, next_start_primary_key, row_list, next_token = ots_client.get_range(
+                ots_table, tablestore.Direction.FORWARD,
+                inclusive_start_primary_key, exclusive_end_primary_key,
+                columns_to_get, limit, max_version = 1)
+            all_rows.extend(row_list)
+
+        print('Total rows: ', len(all_rows))
+        return all_rows
+    except tablestore.OTSClientError as e:
+        print("get row failed, http_status:%d, error_message:%s" % (e.get_http_status(), e.get_error_message()))
+    except tablestore.OTSServiceError as e:
+        print("get row failed, http_status:%d, error_code:%s, error_message:%s, request_id:%s" % (e.get_http_status(), e.get_error_code(), e.get_error_message(), e.get_request_id()))
 
 
-def update_rating(id, rating):
+def update_rating(product_id, user_id, comment_content, rating):
     labels = rating["labels"]
     scores = rating["scores"]
     positive = 0
@@ -131,16 +142,20 @@ def update_rating(id, rating):
         if labels[index] == "Negative":
             negative = int(scores[index] * 100)
 
-    sql = "UPDATE product_comment_tbl set comment_rating_positive=%d, comment_rating_neutral=%d, comment_rating_negative=%d where id=%d" % (positive, neutral, negative, id)
-    print(sql)
-    
-    conn = fetch_db_conn()
-    try:
-        with conn.cursor() as cursor:
-            cursor.execute(sql)
-            conn.commit()
-    finally:
-        conn.close()
+    primary_key = [('product_id', product_id),
+                   ('user_id', user_id)]
+    attribute_columns = [('comment_content', comment_content),
+                         ('comment_rating_positive', positive),
+                         ('comment_rating_neutral', neutral),
+                         ('comment_rating_negative', negative)]
+    row = tablestore.Row(primary_key, attribute_columns)
+    try :
+        consumed, return_row = ots_client.put_row(ots_table, row)
+        print ('[%d %d] put row succeed, consume %s write cu.' % (product_id, user_id, consumed.write))
+    except tablestore.OTSClientError as e:
+        print("[%d %d] put row failed, http_status:%d, error_message:%s" % (product_id, user_id, e.get_http_status(), e.get_error_message()))
+    except tablestore.OTSServiceError as e:
+        print("[%d %d] put row failed, http_status:%d, error_code:%s, error_message:%s, request_id:%s" % (product_id, user_id, e.get_http_status(), e.get_error_code(), e.get_error_message(), e.get_request_id()))
 
 
 if __name__ == "__main__":

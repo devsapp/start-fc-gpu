@@ -9,6 +9,7 @@ RUN sed -i s@/security.ubuntu.com/@/mirrors.aliyun.com/@g /etc/apt/sources.list
 #RUN apt-get update
 RUN pip install Flask -i https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install pymysql -i https://pypi.tuna.tsinghua.edu.cn/simple
+RUN pip install tablestore -i https://pypi.tuna.tsinghua.edu.cn/simple
 COPY --from=build_base /mnt/workspace/.cache/modelscope /mnt/workspace/.cache/modelscope
 COPY --from=build_base /tmp/model /usr/src/app/model
 COPY . .
