@@ -33,11 +33,12 @@ vars: # 全局变量
       logBeginRule: DefaultRegex
       project: "{{ logSLSProject }}"
       logstore: "{{ logSLSLogstore }}"
-    vpcConfig:
-      securityGroupId: "{{ sgId }}"
-      vpcId: "{{ vpcId }}"
-      vswitchIds:
-        - "{{ vswitchId }}"
+    #vpcConfig section is for mysql database
+    #vpcConfig:
+    #  securityGroupId: "{{ sgId }}"
+    #  vpcId: "{{ vpcId }}"
+    #  vswitchIds:
+    #    - "{{ vswitchId }}"
   
 services:
   fc-gpu: # 业务名称/模块名称
@@ -67,11 +68,15 @@ services:
           image: "{{ acrRegistryBackend }}"
         codeUri: ./code
         environmentVariables:
-          MYSQL_HOST: "{{ mysqlHost }}"
-          MYSQL_PORT: "{{ mysqlPort }}"
-          MYSQL_USER: "{{ mysqlUser }}"
-          MYSQL_PASSWORD: "{{ mysqlPassword }}"
-          MYSQL_DBNAME: "{{ mysqlDbname }}"
+          OTS_ENDPOINT: "{{ otsEndpoint }}"
+          OTS_AK_ID: "{{ otsAKID }}"
+          OTS_AK_SECRET: "{{ otsAKSecret }}"
+          OTS_INSTANCE: "{{ otsInstance }}"
+          #MYSQL_HOST: "{{ mysqlHost }}"
+          #MYSQL_PORT: "{{ mysqlPort }}"
+          #MYSQL_USER: "{{ mysqlUser }}"
+          #MYSQL_PASSWORD: "{{ mysqlPassword }}"
+          #MYSQL_DBNAME: "{{ mysqlDbname }}"
       triggers:
         - name: timeTrigger
           description: ''
@@ -100,11 +105,15 @@ services:
           image: "{{ acrRegistryFrontend }}"
         codeUri: ./code
         environmentVariables:
-          MYSQL_HOST: "{{ mysqlHost }}"
-          MYSQL_PORT: "{{ mysqlPort }}"
-          MYSQL_USER: "{{ mysqlUser }}"
-          MYSQL_PASSWORD: "{{ mysqlPassword }}"
-          MYSQL_DBNAME: "{{ mysqlDbname }}"
+          OTS_ENDPOINT: "{{ otsEndpoint }}"
+          OTS_AK_ID: "{{ otsAKID }}"
+          OTS_AK_SECRET: "{{ otsAKSecret }}"
+          OTS_INSTANCE: "{{ otsInstance }}"
+          #MYSQL_HOST: "{{ mysqlHost }}"
+          #MYSQL_PORT: "{{ mysqlPort }}"
+          #MYSQL_USER: "{{ mysqlUser }}"
+          #MYSQL_PASSWORD: "{{ mysqlPassword }}"
+          #MYSQL_DBNAME: "{{ mysqlDbname }}"          
       triggers:
         - name: httpTrigger
           type: http

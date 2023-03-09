@@ -3,20 +3,8 @@ import os
 import sys
 import traceback
 import pymysql
-import tablestore
 
-
-# init flask
 app = Flask(__name__, template_folder="./template")
-
-
-# init ots
-ots_endpoint = os.environ['OTS_ENDPOINT']
-ots_ak_id = os.environ['OTS_AK_ID']
-ots_ak_secret = os.environ['OTS_AK_SECRET']
-ots_instance = os.environ['OTS_INSTANCE']
-ots_table = "mall_comments_mock"
-ots_client = tablestore.OTSClient(ots_endpoint, ots_ak_id, ots_ak_secret, ots_instance, logger_name = 'table_store.log')
 
 
 @app.route('/initialize', methods=['POST'])
@@ -56,46 +44,37 @@ def invoke():
         return errRet, 404, [("x-fc-status", "404")]
 
 
-def fetch_dataset():
-    inclusive_start_primary_key = [('product_id', tablestore.INF_MIN), ('user_id', tablestore.INF_MIN)]
-    exclusive_end_primary_key = [('product_id', tablestore.INF_MAX), ('user_id', tablestore.INF_MAX)]
-    columns_to_get = []
-    limit = 1000
+def fetch_db_conn():
     try:
-        consumed, next_start_primary_key, row_list, next_token = ots_client.get_range(
-            ots_table, tablestore.Direction.FORWARD,
-            inclusive_start_primary_key, exclusive_end_primary_key,
-            columns_to_get, limit, max_version = 1)
-        all_rows = []
-        all_rows.extend(row_list)
+        conn = pymysql.connect(
+            host = os.environ['MYSQL_HOST'],       # 替换为您的HOST名称。
+            port = int(os.environ['MYSQL_PORT']),  # 替换为您的端口号。
+            user = os.environ['MYSQL_USER'],       # 替换为您的用户名。
+            passwd = os.environ['MYSQL_PASSWORD'], # 替换为您的用户名对应的密码。
+            db = os.environ['MYSQL_DBNAME'],       # 替换为您的数据库名称。
+            connect_timeout = 5)
+        return conn
+    except Exception as e:
+        exc_info = sys.exc_info()
+        trace = traceback.format_tb(exc_info[2])
+        errRet = {
+            "message": str(e),
+            "stack": trace
+        }
+        print(errRet)
+        raise Exception(str(e))
 
-        while next_start_primary_key is not None:
-            inclusive_start_primary_key = next_start_primary_key
-            consumed, next_start_primary_key, row_list, next_token = ots_client.get_range(
-                ots_table, tablestore.Direction.FORWARD,
-                inclusive_start_primary_key, exclusive_end_primary_key,
-                columns_to_get, limit, max_version = 1)
-            all_rows.extend(row_list)
 
-        print('Total rows: ', len(all_rows))
-
-        result = []
-        for item in all_rows:
-            comment_id = 0
-            product_id = item.primary_key[0][1]
-            user_id = item.primary_key[1][1]
-            comment_content = item.attribute_columns[0][1]
-            comment_rating_negative = item.attribute_columns[1][1]
-            comment_rating_neutral = item.attribute_columns[2][1]
-            comment_rating_positive = item.attribute_columns[3][1]
-            result.append([comment_id, user_id, product_id, 0, comment_content, comment_rating_positive, comment_rating_neutral, comment_rating_negative])
-        return result
-    except tablestore.OTSClientError as e:
-        print("get row failed, http_status:%d, error_message:%s" % (e.get_http_status(), e.get_error_message()))
-    except tablestore.OTSServiceError as e:
-        print("get row failed, http_status:%d, error_code:%s, error_message:%s, request_id:%s" % (e.get_http_status(), e.get_error_code(), e.get_error_message(), e.get_request_id()))
+def fetch_dataset():
+    conn = fetch_db_conn()
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM product_comment_tbl")
+            result = cursor.fetchall()
+            return result
+    finally:
+        conn.close()
 
 
 if __name__ == '__main__':
     app.run(debug=False, host='0.0.0.0', port=9000)
-

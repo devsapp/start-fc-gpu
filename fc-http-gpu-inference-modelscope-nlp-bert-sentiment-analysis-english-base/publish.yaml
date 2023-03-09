@@ -2,7 +2,7 @@ Type: Application
 Name: fc-http-gpu-inference-modelscope-nlp-bert-sentiment-analysis-english-base
 Provider:
   - 阿里云
-Version: 1.0.9
+Version: 1.1.0
 Description: 快速部署 ModelScope NLP BERT 英文情感分类 推理模型至FC-GPU运行环境
 HomePage: https://github.com/devsapp/start-fc-gpu
 Tags:
@@ -54,42 +54,22 @@ Parameters:
       title: SLS Logstore Project名称
       type: string
       description: SLS Logstore Project名称，该函数的日志将输出至此SLS LogStore
-    sgId:
-      title: SecurityGroup ID
+    otsEndpoint:
+      title: OTS Endpoint名称
       type: string
-      description: 安全组ID，例如：sg-xxxxxxxxxxxxxxxx; 安全组请开放3306端口，以便函数计算正常访问RDS
-    vpcId:
-      title: VPC ID
+      description: OTS Endpoint名称，用于函数访问OTS
+    otsAKID:
+      title: OTS AK ID
       type: string
-      description: 虚拟专用网络ID，例如：vpc-xxxxxxxxxxxxxxxx; 请设置为RDS所在的VPC，以便函数计算正常访问RDS
-    vswitchId:
-      title: vSwitch ID
+      description: OTS AK ID，用于函数访问OTS
+    otsAKSecret:
+      title: OTS AK Secret
       type: string
-      description: 虚拟交换机ID，例如：vsw-xxxxxxxxxxxxxxxx; 请设置为RDS所在的vSwitch，以便函数计算正常访问RDS
-    mysqlHost:
-      title: RDS数据库地址
+      description: OTS AK Secret，用于函数访问OTS
+    otsInstance:
+      title: OTS Instance名称
       type: string
-      description: RDS数据库地址，例如：xxxxxxxxxxxx.mysql.rds.aliyuncs.com
-    mysqlPort:
-      title: RDS数据库端口
-      type: string
-      default: 3306
-      description: RDS数据库端口，例如：3306
-    mysqlUser:
-      title: RDS数据库用户名
-      type: string
-      default: root
-      description: RDS数据库用户名，例如：root
-    mysqlPassword:
-      title: RDS数据库密码
-      type: string
-      default: 123456
-      description: RDS数据库密码，例如：123456
-    mysqlDbname:
-      title: RDS数据库名称
-      type: string
-      default: mall_db
-      description: RDS数据库名称，例如：mall_db
+      description: OTS Instance名称，用于函数访问OTS
     acrRegistryBackend:
       title: GPU后端应用的镜像仓库
       type: string
