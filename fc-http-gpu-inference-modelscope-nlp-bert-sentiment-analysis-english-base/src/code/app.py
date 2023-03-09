@@ -68,7 +68,6 @@ def invoke():
 
     # invoke work : input customer comments(RDS) -> NLP model -> output customer comments rating(RDS)
     data = fetch_dataset()
-    msg = ""
 
     try:
         for item in data:
@@ -81,9 +80,7 @@ def invoke():
                   "comment_content[INPUT]=", comment_content,
                   "rating[OUTPUT]=", rating, "\n")
             update_rating(product_id, user_id, comment_content, rating)
-
-        msg = json.dumps(data, ensure_ascii=False, default=str)
-
+            
     except Exception as e:
         exc_info = sys.exc_info()
         trace = traceback.format_tb(exc_info[2])
@@ -96,7 +93,7 @@ def invoke():
         return errRet, 404, [("x-fc-status", "404")]
 
     print("FC Invoke End RequestId: " + request_id)
-    return msg, 200, [("Content-Type", "text/plain")]
+    return {"success": True}, 200, [("Content-Type", "text/json")]
 
 
 def fetch_dataset():
