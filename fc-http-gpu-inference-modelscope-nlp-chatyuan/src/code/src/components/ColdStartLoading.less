@@ -1,0 +1,50 @@
+.background {
+  background: url('https://img.alicdn.com/imgextra/i3/O1CN01sJJlE01M4XnRYm4t2_!!6000000001381-0-tps-1920-1080.jpg')
+    50% center / cover no-repeat;
+  position: absolute;
+  inset: 0;
+  text-align: center;
+  overflow: hidden;
+}
+
+.title-image {
+  position: absolute;
+  top: 20vh;
+  bottom: 50vh;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: url('https://img.alicdn.com/imgextra/i4/O1CN018H1Ebb1MWTxEtS0tT_!!6000000001442-2-tps-1920-1080.png') 50% center / cover no-repeat;
+}
+
+.loading {
+  border-width: 16px;
+  border-style: solid;
+  border-color: rgb(52, 152, 219) rgb(243, 243, 243) rgb(243, 243, 243);
+  border-image: initial;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  margin: -100px auto;
+  margin-top: 60vh;
+  animation: 2s linear 0s infinite normal none running spin;
+}
+
+@keyframes spin {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+.title {
+  color: white;
+  margin-top: 150px;
+}
+
+.subtitle {
+  color: #605b60;
+  margin-top: 100px;
+}

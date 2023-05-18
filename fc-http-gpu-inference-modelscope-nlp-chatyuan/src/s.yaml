@@ -1,0 +1,111 @@
+edition: 1.0.0
+name: fc-chatyuan
+access: default
+vars:
+  service: "fc-chatyuan"
+  region: "{{ region }}"
+  backendImage: "{{ imageUrl }}"
+
+services:
+  model:
+    component: fc
+    props:
+      region: ${vars.region}
+      service:
+        description: fc-chatyuan
+        internetAccess: true
+        name: ${vars.service}
+      function:
+        handler: index.handler
+        timeout: 7200
+        diskSize: 512
+        caPort: 8000
+        runtime: custom-container
+        cpu: 8
+        customContainerConfig:
+          image: ${vars.backendImage}
+        instanceConcurrency: 100
+        memorySize: 32768
+        name: model
+        asyncConfiguration: {}
+        # GPU 实例，如果希望使用 CPU 实例，可注释下面两行并删除 FC 函数后重新部
+        instanceType: "g1"
+        gpuMemorySize: 16384
+
+      triggers:
+        - name: defaultTrigger
+          description: ""
+          type: http
+          qualifier: LATEST
+          config:
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+            authType: anonymous
+            disableURLInternet: false
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: /*
+  web:
+    component: fc
+    actions:
+      pre-deploy:
+        - run: npm i && npm run build && cp server/index.js dist/index.js
+          path: ./code
+
+    props:
+      region: ${vars.region}
+      service:
+        description: fc-chatyuan
+        internetAccess: true
+        ossMountConfig:
+          mountPoints: []
+        name: ${vars.service}
+      function:
+        handler: index.handler
+        description: fc-chatyuan web界面
+        timeout: 6000
+        diskSize: 512
+        caPort: 8000
+        layers:
+          - acs:fc:${vars.region}:official:layers/Nodejs16/versions/2
+        instanceType: c1
+        runtime: custom
+        cpu: 0.5
+        instanceConcurrency: 100
+        memorySize: 512
+        environmentVariables:
+          ENDPOINT: ${model.output.url.custom_domain[0].domain}
+          PATH: >-
+            /opt/nodejs16/bin::/usr/local/bin/apache-maven/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/ruby/bin:/opt/bin:/code:/code/bin
+          NODE_PATH: /opt/nodejs/node_modules
+        name: web
+        codeUri: "code/dist"
+        customRuntimeConfig:
+          command:
+            - node
+          args:
+            - index.js
+      triggers:
+        - name: default-trigger
+          description: ""
+          type: http
+          config:
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - HEAD
+              - OPTIONS
+            authType: anonymous
+            disableURLInternet: false
+      customDomains:
+        - domainName: auto
+          protocol: HTTP
+          routeConfigs:
+            - path: /*
