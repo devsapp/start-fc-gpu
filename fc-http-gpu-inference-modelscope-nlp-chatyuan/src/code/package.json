@@ -1,0 +1,27 @@
+{
+  "private": true,
+  "author": "OhYee <oyohyee@oyohyee.com>",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev",
+    "preview": "umi preview --host 0.0.0.0 --port 9001"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.0.1",
+    "antd": "^5.4.4",
+    "crypto-js": "^4.1.1",
+    "umi": "^4.0.66"
+  },
+  "devDependencies": {
+    "@types/antd": "^1.0.0",
+    "@types/react": "^18.0.33",
+    "@types/react-dom": "^18.0.11",
+    "prettier": "^2",
+    "prettier-plugin-organize-imports": "^2",
+    "prettier-plugin-packagejson": "^2",
+    "typescript": "^5.0.3"
+  }
+}
