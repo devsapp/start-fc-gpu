@@ -37,10 +37,14 @@ resources:
         image: registry.${vars.region}.aliyuncs.com/serverless_devs/fc-http-gpu-utils-nvidia-smi:latest
         caPort: 9000
       triggers:
-        - name: httpTrigger
-          type: http
-          config:
+        - triggerName: httpTrigger
+          triggerType: http
+          description: 'httpTrigger'
+          qualifier: LATEST
+          triggerConfig:
             authType: anonymous
+            disableURLInternet: false
             methods:
               - GET
               - POST
+              - PUT
