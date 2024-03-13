@@ -1,6 +1,6 @@
 edition: 3.0.0
 name: start-instantid-app
-access: quanxi-ndp
+access: {{ access }}
 
 vars: # 全局变量
   region: {{ region }}
