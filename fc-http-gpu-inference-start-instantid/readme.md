@@ -1,81 +1,85 @@
-# 应用开发说明
+# start-instantid 帮助文档
 
-<p align="center"><b> 中文 | <a href="./readme_en.md"> English </a>  </b></p>
+<p align="center" class="flex justify-center">
+    <a href="https://www.serverless-devs.com" class="ml-1">
+    <img src="http://editor.devsapp.cn/icon?package=start-instantid&type=packageType">
+  </a>
+  <a href="http://www.devsapp.cn/details.html?name=start-instantid" class="ml-1">
+    <img src="http://editor.devsapp.cn/icon?package=start-instantid&type=packageVersion">
+  </a>
+  <a href="http://www.devsapp.cn/details.html?name=start-instantid" class="ml-1">
+    <img src="http://editor.devsapp.cn/icon?package=start-instantid&type=packageDownload">
+  </a>
+</p>
 
-> Serverless Devs 应用开发需要严格遵守 [Serverless Package Model](../../spec/zh/0.0.2/serverless_package_model/readme.md) 中的 [应用模型规范](../../spec/zh/0.0.2/serverless_package_model/3.package_model.md#应用模型规范)。在[应用模型规范](../../spec/zh/0.0.2/serverless_package_model/3.package_model.md#应用模型规范)中有关于[应用模型元数据](../../spec/zh/0.0.2/serverless_package_model/3.package_model.md#应用模型元数据)的说明。
+<description>
 
-Serverless Devs 的组件开发案例已经被集成到 Serverless Devs 命令行工具中，通过对 Serverless Devs 的命令行工具，可以进行空白应用项目的初始化，开发者只需要执行`s init`即可看到：
+> ***快速运行InstantID模型在阿里云函数计算GPU实例***
 
-```shell script
+[InstantID 魔搭社区](https://modelscope.cn/models/instantx/InstantID/summary)
+[InstantID 开源项目](https://github.com/InstantID/InstantID)
 
-🚀  More applications: https://registry.serverless-devs.com
+</description>
 
-? Hello Serverless for Cloud Vendors (Use arrow keys or type to search)
-❯ Alibaba Cloud Serverless
-  AWS Cloud Serverless
-  Tencent Cloud Serverless
-  Baidu Cloud Serverless
-  Dev Template for Serverless Devs
-```
+<table>
 
-此时，选择最后的`Dev Template for Serverless Devs`，并按回车：
+## 前期准备
+使用该项目，推荐您拥有以下的产品权限 / 策略：
 
-```shell script
-$ s init
+| 服务/业务 | 函数计算 |
+| --- |  --- |
+| 权限/策略 | AliyunFCFullAccess</br>AliyunContainerRegistryFullAccess |
 
-🚀  More applications: https://registry.serverless-devs.com
 
-? Hello Serverless for Cloud Vendors Dev Template for Serverless Devs
-? Which template do you like? (Use arrow keys or type to search)
-❯ Application Scaffolding
-  Component Scaffolding
-  Plugin Scaffolding
-```
+</table>
 
-此时，选择`Application Scaffolding`，并按回车，即可完成一个完整的 Serverless Devs 的 Application 项目的初始化，可以通过命令查看文件树：
+<codepre id="codepre">
 
-```shell script
-$ find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
-.
-|____readme.md
-|____version.md
-|____publish.yaml
-|____readme_en.md
-|____src
-| |____s.yaml
-| |____code
-| | |____index.js
-| |____readme.md
-```
 
-这其中：
 
-| 目录         | 含义                                                     |
-| ------------ | -------------------------------------------------------- |
-| readme.md    | 对该组件的描述，或帮助文档信息                           |
-| version.md   | 版本的描述，例如当前版本的更新内容等                     |
-| publish.yaml | 项目所必须的文件，Serverless Devs Package 的开发识别文档 |
-| src          | 应用所在目录，需要包括`s.yaml`和相关的应用代码等         |
+</codepre>
 
-此时，开发者可以在 src 下完成应用的开发，并对项目进行`publish.yaml`文件的编写。完成之后，即可通过以下几个步骤发布项目：
+<deploy>
 
-- 更改 `publish.yaml` 里的 `Version` 字段。确保版本号比现有最高版本号大 1，例如：1.0.0 -> 1.0.1。
+## 部署 & 体验
 
-  > 您可以使用固定的 dev 版本用于持续发布测试版本
+<appcenter>
 
-- 首次发布需要通过 [registry](https://docs.serverless-devs.com/serverless-devs/command/registry) 命令先登录 Serverless Devs Registry。
+- :fire: 通过 [Serverless 应用中心](https://fcnext.console.aliyun.com/applications/create?template=start-instantid) ，
+[![Deploy with Severless Devs](https://img.alicdn.com/imgextra/i1/O1CN01w5RFbX1v45s8TIXPz_!!6000000006118-55-tps-95-28.svg)](https://fcnext.console.aliyun.com/applications/create?template=start-instantid)  该应用。
 
-  ```shell script
-  s registry login
-  ```
+</appcenter>
 
-  随后浏览器会跳出登陆窗口，根据提示进行操作即可。
+- 通过 [Serverless Devs Cli](https://www.serverless-devs.com/serverless-devs/install) 进行部署：
+    - [安装 Serverless Devs Cli 开发者工具](https://www.serverless-devs.com/serverless-devs/install) ，并进行[授权信息配置](https://www.serverless-devs.com/fc/config) ；
+    - 初始化项目：`s init start-instantid -d start-instantid`
+    - 部署项目：`cd start-instantid && s deploy -y`
+- 测试方法
+    - [测试脚本](https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/client.py)
+    - `python3 ./test/client.py http://127.0.0.1:9000/invoke "http://dapengtmp.oss-cn-shanghai.aliyuncs.com/gpu/demo_face.png" "analog film photo of a man. faded film, desaturated, 35mm photo, grainy, vignette, vintage, Kodachrome, Lomography, stained, highly detailed, found footage, masterpiece, best quality" "lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured (lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch,deformed, mutated, cross-eyed, ugly, disfigured"`
+检查函数的镜像加速状态:
 
-- 后续直接执行 `s registry publish` 即可进行发布
 
-- 测试应用
+</deploy>
 
-  如果您使用 dev 版本进行了应用的发布， 假设您的应用名字为 start-application-v3, 那么您可以使用：
+<appdetail id="flushContent">
 
-  - 本地终端执行: `s init start-application-v3@dev`
-  - 浏览器打开: https://fcnext.console.aliyun.com/applications/create?template=start-application-v3@dev 进行测试
+# 应用详情
+
+</appdetail>
+
+<devgroup>
+
+## 开发者社区
+
+您如果有关于错误的反馈或者未来的期待，您可以在 [Serverless Devs repo Issues](https://github.com/serverless-devs/serverless-devs/issues) 中进行反馈和交流。如果您想要加入我们的讨论组或者了解 FC 组件的最新动态，您可以通过以下渠道进行：
+
+<p align="center">
+
+| <img src="https://serverless-article-picture.oss-cn-hangzhou.aliyuncs.com/1635407298906_20211028074819117230.png" width="130px" > | <img src="https://serverless-article-picture.oss-cn-hangzhou.aliyuncs.com/1635407044136_20211028074404326599.png" width="130px" > | <img src="https://serverless-article-picture.oss-cn-hangzhou.aliyuncs.com/1635407252200_20211028074732517533.png" width="130px" > |
+|--- | --- | --- |
+| <center>微信公众号：`serverless`</center> | <center>微信小助手：`xiaojiangwh`</center> | <center>钉钉交流群：`33947367`</center> |
+
+</p>
+
+</devgroup>

@@ -3,8 +3,8 @@ name: start-instantid-app
 access: quanxi-ndp
 
 vars: # 全局变量
-  region: cn-hangzhou
-  name: start-instantid-s3fdadfd
+  region: {{ region }}
+  name: {{ name }}
   role: aliyunfcdefaultrole
 
 resources:
@@ -44,11 +44,45 @@ resources:
       internetAccess: true
       vpcConfig: ${resources.model_cache.output.vpcConfig}
       nasConfig: ${resources.model_cache.output.nasConfig}
-      logConfig:
-        enableRequestMetrics: true
-        enableInstanceMetrics: true
-        logBeginRule: DefaultRegex
-        project: fc-hz-prj
-        logstore: fc-hz-logstore
       environmentVariables:
         MODEL_CACHE: ${resources.model_cache.output.nasConfig.mountPoints.0.mountDir}
+
+  model_app_func:
+    component: 'fc3'
+    props:
+      region: ${vars.region}
+      role: ${vars.role}
+      functionName: ${vars.name}-model-app
+      description: Deploy Instant ID applications of model
+      handler: not-used
+      timeout: 1800
+      memorySize: 32768
+      cpu: 8
+      diskSize: 10240
+      gpuConfig:
+        gpuMemorySize: 24576
+        gpuType: fc.gpu.ampere.1
+      instanceConcurrency: 1
+      runtime: custom-container
+      initializer: 'true'
+      initializationTimeout: 300
+      internetAccess: true
+      vpcConfig: ${resources.model_cache.output.vpcConfig}
+      nasConfig: ${resources.model_cache.output.nasConfig}
+      customContainerConfig:
+        image: registry.${vars.region}.aliyuncs.com/fc-demo2/gpu-test:instantid
+        port: 9000
+      environmentVariables:
+        MODEL_CACHE: ${resources.model_cache.output.nasConfig.mountPoints.0.mountDir}
+      triggers:
+        - triggerName: httpTrigger
+          triggerType: http
+          description: 'httpTriggerModel'
+          qualifier: LATEST
+          triggerConfig:
+            authType: anonymous
+            disableURLInternet: false
+            methods:
+              - GET
+              - POST
+              - PUT

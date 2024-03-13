@@ -1,24 +1,33 @@
+# 规范文档参考:
+# 中文：https://github.com/Serverless-Devs/Serverless-Devs/blob/master/spec/zh/0.0.2/serverless_package_model/package_model.md#应用模型规范
+# English: https://github.com/Serverless-Devs/Serverless-Devs/blob/master/spec/en/0.0.2/serverless_package_model/package_model.md#Application-model-specification
+# --------------
+# Package 开发发布最佳实践:
+#   - [社区讨论 #62](https://github.com/Serverless-Devs/Serverless-Devs/discussions/62);
+#   - [社区讨论 #407](https://github.com/Serverless-Devs/Serverless-Devs/discussions/407);
+#   - [社区讨论 #439](https://github.com/Serverless-Devs/Serverless-Devs/discussions/439);
+
 Edition: 3.0.0
 Type: Project
-Name: 名称
-Version: 版本，例如0.0.1 或者 dev
+Name: start-instantid
 Provider:
-  - 阿里云 # 取值内容参考：https://api.devsapp.cn/v3/common/args.html
-Description: Serverless Devs 应用开发模板
-HomePage: https://www.serverless-devs.com
-Tags: #标签详情
-  - 模板
-  - Serverless Devs
-Category: 新手入门 # 取值内容参考：https://api.devsapp.cn/v3/common/args.html
-Service: # 使用的服务
-  服务名: # 取值内容参考：https://api.devsapp.cn/v3/common/args.html
-    Authorities: #权限描述
-      - AliyunFCFullAccess # 所需要的权限
-# Organization: 阿里云函数计算（FC） # 所属组织
-Effective: Public # 是否公开，取值：Public，Private，Organization
+  - 阿里云
+Version: 0.0.1
+Description: InstantID应用(fc3.0)
+HomePage: https://github.com/devsapp/start-fc-gpu
+Tags:
+  - AIGC
+  - 大模型
+Category: 人工智能
+Organization: 阿里云函数计算（FC）
+Service:
+  函数计算:
+    Authorities:
+      - 创建函数
+Effective: Public
 Parameters:
   type: object
-  additionalProperties: false # 不允许增加其他属性
+  additionalProperties: false
   required: # 必填项
     - region
   properties:
@@ -28,6 +37,10 @@ Parameters:
       default: cn-hangzhou
       description: 创建应用所在的地区
       enum:
-        - cn-beijing
         - cn-hangzhou
-        - cn-shanghai
+    name:
+      title: 项目名
+      type: string
+      default: start-instantid-${default-suffix}
+      pattern: "^[a-zA-Z_][a-zA-Z0-9-_]{0,127}$"
+      description: 项目名称，只能包含字母、数字、下划线和中划线。不能以数字、中划线开头。长度在 1-128 之间
