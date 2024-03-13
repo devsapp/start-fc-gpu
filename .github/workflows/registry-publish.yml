@@ -1,0 +1,32 @@
+name: publish package to serverless-hub
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel twine
+          pip install requests
+      - name: install s
+        run: |
+          npm i @serverless-devs/s@v3 -g
+      - name: s registry login & publish
+        run: |
+          s registry login --token ${{ secrets.alibaba_registry_v3_publish_token }}
+          s registry publish
+        working-directory: fc-http-gpu-inference-start-instantid
