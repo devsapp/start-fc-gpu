@@ -1,0 +1,54 @@
+edition: 3.0.0
+name: start-instantid-app
+access: quanxi-ndp
+
+vars: # 全局变量
+  region: cn-hangzhou
+  name: start-instantid-s3fdadfd
+  role: aliyunfcdefaultrole
+
+resources:
+  model_cache:
+    component: 'fc3'
+    props:
+      region: ${vars.region}
+      role: ${vars.role}
+      functionName: ${vars.name}-model-cache
+      description: Instant ID model cache helper, dont' invoke
+      handler: index.handler
+      instanceType: e1
+      runtime: python3.9
+      code: ./model_cache
+      vpcConfig: auto
+      nasConfig: auto
+
+  model_download_func:
+    component: 'fc3'
+    actions:
+      complete-deploy:
+        - component: fc3 invoke
+    props:
+      region: ${vars.region}
+      role: ${vars.role}
+      functionName: ${vars.name}-model-download
+      description: initialize model into nas storage
+      handler: index.handler
+      timeout: 86400
+      memorySize: 16384
+      cpu: 8
+      diskSize: 10240
+      instanceType: e1
+      instanceConcurrency: 1
+      runtime: python3.9
+      code: ./model_download
+      internetAccess: true
+      vpcConfig: ${resources.model_cache.output.vpcConfig}
+      nasConfig: ${resources.model_cache.output.nasConfig}
+      logConfig:
+        enableRequestMetrics: true
+        enableInstanceMetrics: true
+        logBeginRule: DefaultRegex
+        project: fc-hz-prj
+        logstore: fc-hz-logstore
+      environmentVariables:
+        MODEL_CACHE: ${resources.model_cache.output.nasConfig.mountPoints.0.mountDir}
