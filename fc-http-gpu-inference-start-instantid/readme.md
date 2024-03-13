@@ -57,7 +57,6 @@
 - 测试方法
     - [测试脚本](https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/client.py)
     - `python3 ./test/client.py http://127.0.0.1:9000/invoke "http://dapengtmp.oss-cn-shanghai.aliyuncs.com/gpu/demo_face.png" "analog film photo of a man. faded film, desaturated, 35mm photo, grainy, vignette, vintage, Kodachrome, Lomography, stained, highly detailed, found footage, masterpiece, best quality" "lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured (lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch,deformed, mutated, cross-eyed, ugly, disfigured"`
-检查函数的镜像加速状态:
 
 
 </deploy>
