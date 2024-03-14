@@ -57,7 +57,8 @@
     - 部署项目：`cd start-instantid && s deploy -y`
 
 - 部署说明：
-    - 部署过程涉及19个GB左右的网络模型下载到用户的NAS中（如不存在，部署过程中会自动创建），可能遇到网络问题导致下载失败，请重新部署便可。
+    - 首次部署过程涉及19个GB模型的网络下载（下载模型至用户NAS；如对应地域无存量NAS，部署过程中会自动创建）；因网络问题导致下载失败，请重新部署便可。
+    - 首次部署涉及较长的函数准备时间（加速镜像准备，10~20分钟），请耐心等待；如果遇到部署失败，请重新部署便可。
 
 - 测试方法
     - [测试脚本](https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/client.py)
