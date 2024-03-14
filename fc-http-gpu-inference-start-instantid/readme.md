@@ -65,6 +65,7 @@
     - eg: `python3 ./test/client.py http://{填写model_app函数公网endpoint}/invoke "http://fc-start-gpu-code-samples-jp.oss-ap-northeast-1.aliyuncs.com/fc-http-gpu-inference-instantid/pose.jpg" "analog film photo of a man. faded film, desaturated, 35mm photo, grainy, vignette, vintage, Kodachrome, Lomography, stained, highly detailed, found footage, masterpiece, best quality" "lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured (lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch,deformed, mutated, cross-eyed, ugly, disfigured"`
 
 - 效果展现
+
 | 原图 | 风格1 |
 |--- | --- |
 | <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose.jpg"> | <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose_output.png"> |
