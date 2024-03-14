@@ -12,7 +12,7 @@ Type: Project
 Name: start-instantid
 Provider:
   - 阿里云
-Version: 0.0.2
+Version: 0.0.3
 Description: InstantID应用(fc3.0)
 HomePage: https://github.com/devsapp/start-fc-gpu
 Tags:

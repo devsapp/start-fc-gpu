@@ -43,9 +43,10 @@ def handler(event, context):
     cache_dir = os.getenv('MODEL_CACHE', '/mnt/auto')
     print("cache_dir:", cache_dir)
 
-    model_url_1 = "https://fc-start-gpu-code-samples-hz.oss-cn-hangzhou-internal.aliyuncs.com/fc-http-gpu-inference-instantid/checkpoints.tar"
-    model_url_2 = "https://fc-start-gpu-code-samples-hz.oss-cn-hangzhou-internal.aliyuncs.com/fc-http-gpu-inference-instantid/models.tar"
-    model_url_3 = "https://fc-start-gpu-code-samples-hz.oss-cn-hangzhou-internal.aliyuncs.com/fc-http-gpu-inference-instantid/sdid_models.tar"
+    # TODO: support more region
+    model_url_1 = "https://fc-start-gpu-code-samples-jp.oss-ap-northeast-1-internal.aliyuncs.com/fc-http-gpu-inference-instantid/checkpoints.tar"
+    model_url_2 = "https://fc-start-gpu-code-samples-jp.oss-ap-northeast-1-internal.aliyuncs.com/fc-http-gpu-inference-instantid/models.tar"
+    model_url_3 = "https://fc-start-gpu-code-samples-jp.oss-ap-northeast-1-internal.aliyuncs.com/fc-http-gpu-inference-instantid/sdid_models.tar"
 
     download_and_extract_necessary(model_url_1, cache_dir, "checkpoints.tar")
     download_and_extract_necessary(model_url_2, cache_dir, "models.tar")
