@@ -47,6 +47,7 @@
 
 - :fire: 通过 [Serverless 应用中心](https://fcnext.console.aliyun.com/applications/create?template=start-instantid) ，
 [![Deploy with Severless Devs](https://img.alicdn.com/imgextra/i1/O1CN01w5RFbX1v45s8TIXPz_!!6000000006118-55-tps-95-28.svg)](https://fcnext.console.aliyun.com/applications/create?template=start-instantid)  该应用。
+    - 快速体验，请选择直接部署，无须通过代码仓库部署。
 
 </appcenter>
 
@@ -54,10 +55,21 @@
     - [安装 Serverless Devs Cli 开发者工具](https://www.serverless-devs.com/serverless-devs/install) ，并进行[授权信息配置](https://www.serverless-devs.com/fc/config) ；
     - 初始化项目：`s init start-instantid -d start-instantid`
     - 部署项目：`cd start-instantid && s deploy -y`
+
+- 部署说明：
+    - 部署过程涉及19个GB左右的网络模型下载到用户的NAS中（如不存在，部署过程中会自动创建），可能遇到网络问题导致下载失败，请重新部署便可。
+
 - 测试方法
     - [测试脚本](https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/client.py)
-    - `python3 ./test/client.py http://127.0.0.1:9000/invoke "http://dapengtmp.oss-cn-shanghai.aliyuncs.com/gpu/demo_face.png" "analog film photo of a man. faded film, desaturated, 35mm photo, grainy, vignette, vintage, Kodachrome, Lomography, stained, highly detailed, found footage, masterpiece, best quality" "lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured (lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch,deformed, mutated, cross-eyed, ugly, disfigured"`
+    - `"Usage: client.py <request url> <image url> <prompt> <negative prompt>"`
+    - eg: `python3 ./test/client.py http://{填写model_app函数公网endpoint}/invoke "http://fc-start-gpu-code-samples-jp.oss-ap-northeast-1.aliyuncs.com/fc-http-gpu-inference-instantid/pose.jpg" "analog film photo of a man. faded film, desaturated, 35mm photo, grainy, vignette, vintage, Kodachrome, Lomography, stained, highly detailed, found footage, masterpiece, best quality" "lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch, deformed, mutated, cross-eyed, ugly, disfigured (lowres, low quality, worst quality:1.2), (text:1.2), watermark, painting, drawing, illustration, glitch,deformed, mutated, cross-eyed, ugly, disfigured"`
 
+- 效果展现
+| 原图 | 风格1 |
+|--- | --- |
+| <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose.jpg"> | <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose_output.png"> |
+| <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose2.jpg"> | <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose2_output.png"> |
+| <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose3.jpg"> | <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose3_output.png"> |
 
 </deploy>
 
