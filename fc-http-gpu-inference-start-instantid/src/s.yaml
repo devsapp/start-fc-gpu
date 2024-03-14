@@ -34,7 +34,7 @@ resources:
       description: initialize model into nas storage
       handler: index.handler
       timeout: 86400
-      memorySize: 16384
+      memorySize: 32768
       cpu: 8
       diskSize: 10240
       instanceType: e1
@@ -64,13 +64,15 @@ resources:
         gpuType: fc.gpu.ampere.1
       instanceConcurrency: 1
       runtime: custom-container
-      initializer: 'true'
-      initializationTimeout: 300
       internetAccess: true
+      instanceLifecycleConfig:
+        initializer:
+          handler: 'true'
+          timeout: 300
       vpcConfig: ${resources.model_cache.output.vpcConfig}
       nasConfig: ${resources.model_cache.output.nasConfig}
       customContainerConfig:
-        image: registry.${vars.region}.aliyuncs.com/fc-demo2/gpu-test:instantid
+        image: registry.${vars.region}.aliyuncs.com/fc_demo/fc-gpu-basic:instantid
         port: 9000
       environmentVariables:
         MODEL_CACHE: ${resources.model_cache.output.nasConfig.mountPoints.0.mountDir}
