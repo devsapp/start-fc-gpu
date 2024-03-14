@@ -67,9 +67,9 @@
 - 效果展现
 | 原图 | 风格1 |
 |--- | --- |
-| <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose.jpg"> | <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose_output.png"> |
-| <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose2.jpg"> | <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose2_output.png"> |
-| <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose3.jpg"> | <img src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose3_output.png"> |
+| <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose.jpg"> | <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose_output.png"> |
+| <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose2.jpg"> | <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose2_output.png"> |
+| <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose3.jpg"> | <img width="260px" src="https://github.com/devsapp/start-fc-gpu/blob/main/fc-http-gpu-inference-start-instantid/src/model_app/test/img/pose3_output.png"> |
 
 </deploy>
 
