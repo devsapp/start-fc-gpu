@@ -9,6 +9,11 @@ fs.writeFileSync(
 );
 
 const server = http.createServer((req, res) => {
+    if (path.normalize(decodeURI(req.url)) !== decodeURI(req.url)) {
+        res.statusCode = 403;
+        res.end();
+        return;
+    }
   // 获取请求的文件路径
   const url = req.url === '/' || req.url === '' ? 'index.html' : req.url;
 
