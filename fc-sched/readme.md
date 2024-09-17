@@ -79,11 +79,26 @@ FC集群调度应用(fc3.0)
 
 <usedetail id="flushContent">
 
-* 依赖：OTS部分
+* OTS:
 
-![OTS](https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_1.png?raw=true)
-![OTS](https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_2.png?raw=true)
-![OTS](https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_3.png?raw=true)
+需要在阿里云控制台新建OTS数据库，并创建相应表与字段,
+
+| 字段类型    | 字段名称   | 字段数据类型 | 字段说明 |
+| ---------- | -------- | ---------- | ------- |
+| PrimaryKey | endpoint | String     | 存储用户自建IDC集群的各GPU POD服务地址 |
+| Attribute  | ref      | Integer    | endpoint引用计数，当前仅0/1（未分配/已分配）|
+
+**step1: 创建OTS数据库、并开放公网访问**
+
+ <img src="https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_1.png?raw=true" width=300 />
+
+**step2: 创建OTS数据表、以及初始化该表主键**
+
+ <img src="https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_2.png?raw=true" width=300 />
+ 
+**step3: 创建OTS数据表预定义列**
+
+<img src="https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_3.png?raw=true" width=300 />
 
 
 
