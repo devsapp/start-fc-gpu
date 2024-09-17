@@ -56,6 +56,6 @@ jobs:
       #  working-directory: fc-http-gpu-ffmpeg
       - name: s registry login & publish fc3-sched
         run: |
-          s registry login --token ${{ secrets.alibaba_registry_v3_publish_token }}
-          s registry publish
+          s registry login --token ${{ secrets.alibaba_registry_v3_publish_token }} --debug
+          s registry publish --debug
         working-directory: fc-sched
