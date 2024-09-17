@@ -1,0 +1,144 @@
+edition: 3.0.0
+name: fc3-sched
+access: "{{ access }}"
+vars:
+  region: "{{ region }}"
+  prefix: "{{ namespace }}"
+  otsEndpoint: "{{ otsEndpoint }}"
+  otsInstance: "{{ otsInstance }}"
+  otsTable: "{{ otsTable }}"
+
+resources:
+  fc-sched-ops:
+    component: fc3
+    props:
+      region: "${vars.region}"
+      functionName: "${vars.prefix}-ops"
+      description: "FC混合调度解决方案 - 运维管控函数"
+      runtime: custom.debian10
+      code: ./fc-sched-ops
+      handler: index.handler
+      cpu: 2
+      memorySize: 4096
+      diskSize: 512
+      timeout: 600
+      instanceConcurrency: 100
+      internetAccess: true
+      layers:
+        - acs:fc:${vars.region}:official:layers/Python310-Package-Collection/versions/3
+      customRuntimeConfig:
+        port: 9000
+        command:
+          - python3
+          - app.py
+      environmentVariables:
+        PATH: >-
+          /var/fc/lang/python3.10/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/bin
+        PYTHONPATH: /opt/python:/code
+        LD_LIBRARY_PATH: >-
+          /code:/code/lib:/usr/local/lib:/opt/lib:/opt/php8.1/lib:/opt/php8.0/lib:/opt/php7.2/lib
+        OTS_ENDPOINT: "${vars.otsEndpoint}"
+        OTS_INSTANCE: "${vars.otsInstance}"
+        OTS_TABLENAME: "${vars.otsTable}"
+      triggers:
+        - triggerConfig:
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            authType: anonymous
+            disableURLInternet: false
+          triggerName: defaultTrigger
+          qualifier: LATEST
+          triggerType: http
+
+  fc-sched-core:
+    component: fc3
+    props:
+      region: "${vars.region}"
+      functionName: "${vars.prefix}-core"
+      description: "FC混合调度解决方案 - 请求转发函数"
+      runtime: custom.debian10
+      code: ./fc-sched-core
+      handler: index.handler
+      cpu: 2
+      memorySize: 4096
+      diskSize: 512
+      timeout: 600
+      instanceConcurrency: 1
+      internetAccess: true
+      layers:
+        - acs:fc:${vars.region}:official:layers/Python310-Package-Collection/versions/3
+      customRuntimeConfig:
+        port: 9000
+        command:
+          - python3
+          - app.py
+      environmentVariables:
+        PATH: >-
+          /var/fc/lang/python3.10/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/bin
+        PYTHONPATH: /opt/python:/code
+        LD_LIBRARY_PATH: >-
+          /code:/code/lib:/usr/local/lib:/opt/lib:/opt/php8.1/lib:/opt/php8.0/lib:/opt/php7.2/lib
+        OTS_ENDPOINT: "${vars.otsEndpoint}"
+        OTS_INSTANCE: "${vars.otsInstance}"
+        OTS_TABLENAME: "${vars.otsTable}"
+      instanceLifecycleConfig:
+        initializer:
+          handler: 'true'
+          timeout: 10
+        preStop:
+          handler: 'true'
+          timeout: 10
+      triggers:
+        - triggerConfig:
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            authType: anonymous
+            disableURLInternet: false
+          triggerName: defaultTrigger
+          qualifier: LATEST
+          triggerType: http
+
+  fc-sched-proxy:
+    component: fc3
+    props:
+      region: "${vars.region}"
+      functionName: "${vars.prefix}-proxy"
+      description: "FC混合调度解决方案 - 统一接入层函数"
+      runtime: custom.debian10
+      code: ./fc-sched-proxy
+      handler: index.handler
+      cpu: 2
+      memorySize: 4096
+      diskSize: 512
+      timeout: 600
+      instanceConcurrency: 100
+      internetAccess: true
+      layers:
+        - acs:fc:${vars.region}:official:layers/Nginx/versions/1
+      customRuntimeConfig:
+        command:
+          - "/opt/bin/nginx"
+          - "-c"
+          - "/code/nginx.conf"
+        port: 9000
+      triggers:
+        - triggerConfig:
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            authType: anonymous
+            disableURLInternet: false
+          triggerName: defaultTrigger
+          qualifier: LATEST
+          triggerType: http

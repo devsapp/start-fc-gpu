@@ -1,0 +1,58 @@
+Edition: 3.0.0
+Type: Project
+Name: fc3-sched
+Provider:
+  - 阿里云
+Version: 0.0.1
+Description: 基于阿里云函数计算的混合GPU集群调度解决方案
+HomePage: https://github.com/devsapp/start-fc-gpu/tree/v3
+Tags:
+  - 函数计算
+  - 人工智能
+  - GPU
+Category: 人工智能
+Organization: 阿里云函数计算(FC)
+Service:
+  函数计算:
+    Authorities:
+      - 创建函数
+Effective: Public
+Parameters:
+  type: object
+  additionalProperties: false # 不允许增加其他属性
+  required: # 必填项
+    - region
+    - namespace
+    - otsEndpoint
+    - otsInstance
+    - otsTable
+  properties:
+    region:
+      title: 地域
+      type: string
+      default: cn-hangzhou
+      description: 创建应用所在的地区
+      enum:
+        - cn-beijing
+        - cn-hangzhou
+        - cn-shanghai
+        - cn-shenzhen
+    namespace:
+      title: 命名空间
+      type: string
+      default: fc-sched-${default-suffix}
+      description: 命名空间将作为函数名的前缀，用以区分不同的 sd 应用，默认挂载的 nas 目录也取决于命名空间。
+    otsEndpoint:
+      title: OTS Endpoint
+      type: string
+      description: OTS Endpoint地址,用于持久化用户自建GPU集群相关的元信息
+    otsInstance:
+      title: OTS Instance
+      type: string
+      default: fc-sched
+      description: OTS Instance名称,用于持久化用户自建GPU集群相关的元信息
+    otsTable:
+      title: OTS Table
+      type: string
+      default: endpoints
+      description: OTS Table名称,用于持久化用户自建GPU集群相关的元信息
