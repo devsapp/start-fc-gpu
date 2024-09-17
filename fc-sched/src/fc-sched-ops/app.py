@@ -46,6 +46,8 @@ def register_endpoint():
         print("register endpoint failed, http_status:%d, error_message:%s" % (e.get_http_status(), e.get_error_message()))
     except OTSServiceError as e:
         print("register endpoint failed, http_status:%d, error_code:%s, error_message:%s, request_id:%s" % (e.get_http_status(), e.get_error_code(), e.get_error_message(), e.get_request_id()))                    
+    except Exception as e:
+        print("register endpoint failed, error_message:%s" % e.get_error_message())
 
     print("FC Invoke End RequestId: " + rid)
     return "register succ"
@@ -70,6 +72,8 @@ def unregister_endpoint():
         print("unregister endpoint failed, http_status:%d, error_message:%s" % (e.get_http_status(), e.get_error_message()))
     except OTSServiceError as e:
         print("unregister endpoint failed, http_status:%d, error_code:%s, error_message:%s, request_id:%s" % (e.get_http_status(), e.get_error_code(), e.get_error_message(), e.get_request_id()))
+    except Exception as e:
+        print("unregister endpoint failed, error_message:%s" % e.get_error_message())
 
     print("FC Invoke End RequestId: " + rid)
     return "unregister succ"
