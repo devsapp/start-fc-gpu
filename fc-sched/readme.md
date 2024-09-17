@@ -79,13 +79,22 @@ FC集群调度应用(fc3.0)
 
 <usedetail id="flushContent">
 
+* 依赖：OTS部分
+
+![OTS](https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_1.png?raw=true)
+![OTS](https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_2.png?raw=true)
+![OTS](https://github.com/devsapp/start-fc-gpu/blob/v3/materials/ots_3.png?raw=true)
+
+
+
 </usedetail>
 
 ## 注意事项
 
 <matters id="flushContent">
 
-* FC函数权限: fc-sched-[core|ops]函数角色可使用默认的aliyunfcdefaultrole, 并为aliyunfcdefaultrole增加AliyunOTSFullAccess权限。
+* FC函数权限: fc-sched-[core|ops]函数角色可使用默认的aliyunfcdefaultrole, 并为aliyunfcdefaultrole增加AliyunOTSFullAccess,AliyunOTSWriteOnlyAccess
+,AliyunOTSReadOnlyAccess权限。
 * OTSEndpoint: 需要为OTSEndpint开启公网访问权限、或VPC访问权限; 当OTSEndpint开启VPC访问权限时, 请为fc-sched-[core|ops]配置相同的VPC。
 
 

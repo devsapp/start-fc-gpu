@@ -7,6 +7,7 @@ vars:
   otsEndpoint: "{{ otsEndpoint }}"
   otsInstance: "{{ otsInstance }}"
   otsTable: "{{ otsTable }}"
+  roleArn: "{{roleArn}}"
 
 resources:
   fc-sched-ops:
@@ -15,6 +16,7 @@ resources:
       region: "${vars.region}"
       functionName: "${vars.prefix}-ops"
       description: "FC混合调度解决方案 - 运维管控函数"
+      role: ${vars.roleArn}
       runtime: custom.debian10
       code: ./fc-sched-ops
       handler: index.handler
@@ -38,8 +40,8 @@ resources:
         LD_LIBRARY_PATH: >-
           /code:/code/lib:/usr/local/lib:/opt/lib:/opt/php8.1/lib:/opt/php8.0/lib:/opt/php7.2/lib
         OTS_ENDPOINT: "${vars.otsEndpoint}"
-        OTS_INSTANCE: "${vars.otsInstance}"
-        OTS_TABLENAME: "${vars.otsTable}"
+        OTS_INSTANCE_NAME: "${vars.otsInstance}"
+        OTS_TABLE_NAME: "${vars.otsTable}"
       triggers:
         - triggerConfig:
             methods:
@@ -60,6 +62,7 @@ resources:
       region: "${vars.region}"
       functionName: "${vars.prefix}-core"
       description: "FC混合调度解决方案 - 请求转发函数"
+      role: ${vars.roleArn}
       runtime: custom.debian10
       code: ./fc-sched-core
       handler: index.handler
@@ -83,8 +86,8 @@ resources:
         LD_LIBRARY_PATH: >-
           /code:/code/lib:/usr/local/lib:/opt/lib:/opt/php8.1/lib:/opt/php8.0/lib:/opt/php7.2/lib
         OTS_ENDPOINT: "${vars.otsEndpoint}"
-        OTS_INSTANCE: "${vars.otsInstance}"
-        OTS_TABLENAME: "${vars.otsTable}"
+        OTS_INSTANCE_NAME: "${vars.otsInstance}"
+        OTS_TABLE_NAME: "${vars.otsTable}"
       instanceLifecycleConfig:
         initializer:
           handler: 'true'
@@ -112,6 +115,7 @@ resources:
       region: "${vars.region}"
       functionName: "${vars.prefix}-proxy"
       description: "FC混合调度解决方案 - 统一接入层函数"
+      role: ${vars.roleArn}
       runtime: custom.debian10
       code: ./fc-sched-proxy
       handler: index.handler

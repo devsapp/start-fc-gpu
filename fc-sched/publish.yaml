@@ -56,3 +56,22 @@ Parameters:
       type: string
       default: endpoints
       description: OTS Table名称,用于持久化用户自建GPU集群相关的元信息
+    roleArn:
+      title: RAM 角色 ARN
+      type: string
+      default: ''
+      pattern: '^acs:ram::[0-9]*:role/.*$'
+      description: |
+        函数计算访问云服务时使用的服务角色，需要填写具体的角色ARN，格式为acs:ram::$account-id>:role/$role-name。例如：acs:ram::14310000000:role/aliyunfcdefaultrole。
+        如果您没有特殊要求，可以使用函数计算提供的默认的服务角色，即AliyunFCDefaultRole, 并增加 AliyunFCFullAccess 权限。如果您首次使用函数计算，可以访问 https://fcnext.console.aliyun.com 进行授权。
+        详细文档参考 https://help.aliyun.com/document_detail/181589.html#section-o93-dbr-z6o"
+      required: true
+      x-role:
+        name: fcdeployrole
+        service: fc
+        authorities:
+          - AliyunFCDefaultRolePolicy
+          - AliyunFCFullAccess
+          - AliyunOTSFullAccess
+          - AliyunOTSReadOnlyAccess
+          - AliyunOTSWriteOnlyAccess
