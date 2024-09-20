@@ -3,7 +3,7 @@ Type: Project
 Name: fc3-sched
 Provider:
   - 阿里云
-Version: 0.0.1
+Version: 0.0.2
 Description: 基于阿里云函数计算的混合GPU集群调度解决方案
 HomePage: https://github.com/devsapp/start-fc-gpu/tree/v3
 Tags:
@@ -41,7 +41,7 @@ Parameters:
       title: 命名空间
       type: string
       default: fc-sched-${default-suffix}
-      description: 命名空间将作为函数名的前缀，用以区分不同的 sd 应用，默认挂载的 nas 目录也取决于命名空间。
+      description: 命名空间将作为函数名的前缀，用以区分不同的应用。
     otsEndpoint:
       title: OTS Endpoint
       type: string
