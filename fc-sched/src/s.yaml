@@ -12,6 +12,12 @@ vars:
 resources:
   fc-sched-ops:
     component: fc3
+    actions:
+      success-deploy:
+        - run: |
+            s cli fc3 provision put --region ${this.props.region} --function-name ${this.props.functionName} --qualifier LATEST --target 1 --always-allocate-cpu true -a {{ access }}
+            s cli fc3 concurrency put --region ${this.props.region} --function-name ${this.props.functionName} --reserved-concurrency 1 -a {{ access }}
+          path: ./
     props:
       region: "${vars.region}"
       functionName: "${vars.prefix}-ops"
@@ -20,9 +26,9 @@ resources:
       runtime: custom.debian10
       code: ./fc-sched-ops
       handler: index.handler
-      cpu: 2
-      memorySize: 4096
-      diskSize: 512
+      cpu: 1
+      memorySize: 2048
+      diskSize: 10240
       timeout: 600
       instanceConcurrency: 100
       internetAccess: true
@@ -42,6 +48,10 @@ resources:
         OTS_ENDPOINT: "${vars.otsEndpoint}"
         OTS_INSTANCE_NAME: "${vars.otsInstance}"
         OTS_TABLE_NAME: "${vars.otsTable}"
+      instanceLifecycleConfig:
+        initializer:
+          handler: 'true'
+          timeout: 60
       triggers:
         - triggerConfig:
             methods:
@@ -66,9 +76,9 @@ resources:
       runtime: custom.debian10
       code: ./fc-sched-core
       handler: index.handler
-      cpu: 2
-      memorySize: 4096
-      diskSize: 512
+      cpu: 1
+      memorySize: 2048
+      diskSize: 10240
       timeout: 600
       instanceConcurrency: 1
       internetAccess: true
@@ -91,10 +101,10 @@ resources:
       instanceLifecycleConfig:
         initializer:
           handler: 'true'
-          timeout: 10
+          timeout: 60
         preStop:
           handler: 'true'
-          timeout: 10
+          timeout: 60
       triggers:
         - triggerConfig:
             methods:
@@ -119,9 +129,9 @@ resources:
       runtime: custom.debian10
       code: ./fc-sched-proxy
       handler: index.handler
-      cpu: 2
-      memorySize: 4096
-      diskSize: 512
+      cpu: 1
+      memorySize: 2048
+      diskSize: 10240
       timeout: 600
       instanceConcurrency: 100
       internetAccess: true
