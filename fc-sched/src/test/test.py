@@ -1,11 +1,7 @@
 import requests
 import base64
 
-endpoint="http://39.100.103.2:7860"    # backend ecs1
-endpoint="http://47.92.208.112:7860"   # backend ecs2
-endpoint="http://fc-sched-core-efqkxjhmge.cn-zhangjiakou.fcapp.run"  # frontend fc endpoint(ecs1+ec2)
-endpoint="http://sd-641206--sd.fcv3.1431999136518149.cn-hangzhou.fc.devsapp.net" # fc endpoint(fc native gpu)
-endpoint="http://fc-sched-proxy-hapgaagkif.cn-zhangjiakou.fcapp.run" # fc hybrid endpoint(user face)
+endpoint="http://sd_http_url"
 username=""
 password=""
 
