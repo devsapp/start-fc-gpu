@@ -15,24 +15,24 @@ import time
 import traceback
 import urllib.request
 import socket
-
+import threading
 
 OTS_ENDPOINT = os.getenv("OTS_ENDPOINT", "https://fc-sched.cn-beijing.ots.aliyuncs.com")
 OTS_INSTANCE = os.getenv("OTS_INSTANCE_NAME", "fc-sched")
-OTS_TABLENAME = os.getenv("OTS_TABLE_NAME","endpoints")
+OTS_TABLENAME = os.getenv("OTS_TABLE_NAME", "endpoints")
+OTS_PK = "endpoint"
+OTS_REF_KEY = "ref"
+OTS_LAST_UPDATE_TMS_KEY = "last_update_tms"
+OTS_KEEPALIVE_INTERVAL = 10
 REQUEST_ID_HEADER = 'x-fc-request-id'
 REQUEST_AK_ID_HEADER = 'x-fc-access-key-id'
 REQUEST_AK_SK_HEADER = 'x-fc-access-key-secret'
 REQUEST_STS_TOKEN_HEADER = 'x-fc-security-token'
-OTS_PK = "endpoint"
-OTS_REF_KEY = "ref"
-RETRY_SLEEP_SEC = 0.2
-RETRY_MAX_TIMES = 60
+RETRY_SLEEP_SEC = 0.5
+RETRY_MAX_TIMES = 10
 custom_state = None
 
-
 app = Flask(__name__)
-
 
 @app.route('/initialize', methods=['POST'])
 def initialize():
@@ -42,47 +42,60 @@ def initialize():
     # assign backend endpoint
     ak_id, ak_sk, sts_token = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token) 
-    ip = get_available_ip(ots_client)
-    if ip is None or ip == "":
-        print("[Critical] fail to reserved the backend ip")
+
+    endpoint = setup(ots_client)
+    if endpoint == None or endpoint == "":
         errmsg = { 'Code': 500, 
-                    'Message': str("fail to reserve the bakcend ip."),
+                    'Message': "fail to reserve the bakcend endpoint.",
                     "Success": False }
         return errmsg, 500, [("Content-Type", "application/json")]
 
-    # available to all requests in the entire lifecycle
-    global custom_state
-    custom_state = {"ip" : ip}
-    print("initialize to reserve backend ip: " + ip)
+    # start keepalive in background
+    period_update_ots_time(ots_client, endpoint)
 
     print("FC Initialize End RequestId: " + rid)
     return "OK"
 
+def setup(ots_client):
+    endpoint = get_available_endpoint(ots_client)
+    if endpoint is None or endpoint == "":
+        print("[Critical] fail to reserved the backend endpoint")
+        return None
+
+    # available to all requests in the entire lifecycle
+    global custom_state
+    custom_state = {"endpoint" : endpoint}
+
+    print("initialize to reserve backend endpoint: " + endpoint)
+    return endpoint
 
 @app.route('/pre-stop', methods=['GET'])
 def pre_stop():
     rid = request.headers.get(REQUEST_ID_HEADER)
     print("FC Pre-Stop Start RequestId: " + rid)
-    cleanup()
-    print("FC Pre-Stop End RequestId: " + rid)
-    return "OK"
-
-def cleanup():
-    global custom_state
-    if custom_state is None or custom_state["ip"] is None or custom_state["ip"] == "":
-        print("cleanup : no need to release backend ip")
-        return
-
-    ip = custom_state["ip"]
-    print("cleanup ip: ", ip)
     
     ak_id, ak_sk, sts_token = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token) 
-    ok = release_ip(ots_client, ip)
+    
+    cleanup(ots_client)
+    
+    print("FC Pre-Stop End RequestId: " + rid)
+    return "OK"
+
+def cleanup(ots_client):
+    global custom_state
+    if custom_state is None or custom_state["endpoint"] is None or custom_state["endpoint"] == "":
+        print("cleanup : no need to release backend endpoint")
+        return
+
+    endpoint = custom_state["endpoint"]
+    print("cleanup backend endpoint: ", endpoint)
+    
+    ok = release_endpoint(ots_client, endpoint)
     if ok == False:
-        print("[Critical] fail to release the backend ip " + ip)
+        print("[Critical] fail to release the backend endpoint " + endpoint)
     else:
-        print("cleanup ip:" + ip + " succ: ", ok)
+        print("cleanup endpoint:" + endpoint + " succ: ", ok)
 
     custom_state = None
 
@@ -92,30 +105,30 @@ def cleanup():
 #    cleanup()
 #    print("cleanup_request: leave")
 
-
 @app.route('/<path:subpath>', methods=['POST'])
 def handler(subpath):
     rid = request.headers.get(REQUEST_ID_HEADER)
     print("FC Invoke Start RequestId: " + rid)
 
-    # fetch backend srv ip
+    # fetch backend srv endpoint
     global custom_state
-    if custom_state is None or custom_state["ip"] is None or custom_state["ip"] == "":
-        print("[Critical] unable to process request, since missing neceessary context data(backend_ip)")
+    if custom_state is None or custom_state["endpoint"] is None or custom_state["endpoint"] == "":
+        print("[Critical] unable to process request, since missing neceessary context data(backend_endpoint)")
         errmsg = { 'Code': 500, 
-                    'Message': str("unable to process request, since missing neceessary context data(backend_ip)"),
+                    'Message': "unable to process request, since missing neceessary context data(backend_endpoint)",
                     "Success": False }
         return errmsg, 500, [("Content-Type", "application/json")]
 
-    ip = custom_state["ip"]
+    endpoint = custom_state["endpoint"]
 
-    response, err = proxy_request(ip, subpath)
+    # proxy request
+    response, err = proxy_request(endpoint, subpath)
     if response:
         response_body = response.read()
         user_rsp = Response(response_body)
         user_rsp.status_code = response.code
         for header, value in response.headers.items():
-            print("handler user_rsp: " + header + ": " + value)
+            print("response header: " + header + ": " + value)
             user_rsp.headers[header] = value
         return user_rsp
     else:
@@ -127,32 +140,33 @@ def handler(subpath):
 
     print("FC Invoke End RequestId: " + rid)
 
-
 @app.route('/test/proxy_request', methods=['POST'])
 def test_proxy_request():
     # mock server
-    #     ip: 11.238.116.100 
+    #     endpoint: 11.238.116.100 
     data = proxy_request("42.81.21.165")
     if data is None:
         return "fail to proxy"
     return data
 
-def proxy_request(ip, subpath):
+def proxy_request(endpoint, subpath):
     try:
-        url = "http://" + ip + ":7860/" + subpath
-        #headers = {
-        #    "Content-Type": request.headers.get('Content-Type'),
-        #    "X-Model-Best-Model": request.headers.get('X-Model-Best-Model'),
-        #}
-        headers = request.headers
+        url = "http://" + endpoint + "/" + subpath
+        method = request.method
+        headers = {}
+        for header, value in request.headers.items():
+            # When forwarding a request, remove the X-Fc request header to avoid leaking sensitive information.
+            if header.startswith("X-Fc") == False:
+                headers[header] = value
         data = request.data
         timeout = 600
         print("proxy_request url:", url)
+        print("proxy_request method:", method)
         print("proxy_request headers:", headers)
         print("proxy_request data:", data)
         print("proxy_request timeout:", timeout)
 
-        req = urllib.request.Request(url, data=data, headers=headers, method='POST')
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
         response = urllib.request.urlopen(req, timeout=timeout)
         return response, None
 
@@ -166,45 +180,16 @@ def proxy_request(ip, subpath):
         print("proxy_request failed, Exception Error:", e)
         return None, e
 
-
-#def proxy_request(ip):
-#    # TODO:
-#    #     if the response body is very large, change to streaming here
-#    #     improve later.
-#    try:
-#        inference_url = ip + ":5000/generate_aud"
-#        #inference_url = "http://" + ip + ":80/"
-#        x_model_best_model = request.headers.get('X-Model-Best-Model')
-#        content_type = request.headers.get('Content-Type')
-#        data = request.data
-#        print("proxy_request inference_url:", inference_url)
-#        print("proxy_request x_model_best_model:", x_model_best_model)
-#        print("proxy_request content_type:", content_type)
-#        print("proxy_request data:", data)
-#
-#        cmd = ['curl', '-X', 'POST', inference_url, '-H', f'X-Model-Best-Model: {x_model_best_model}', '-H', f'Content-Type: {content_type}', '-d', data]
-#        #cmd = ['curl', inference_url, '-H', 'Host: www.sina.com.cn']
-#        print("proxy_request command:", cmd)
-#
-#        result = subprocess.run(cmd, capture_output=True, text=True)
-#        print(result.stdout)
-#        return result.stdout
-#    except Exception as e:
-#        print('proxy_request failed, Exception info:', e)
-#
-#    return None
-
-
-@app.route('/test/get_available_ip', methods=['POST'])
-def test_get_available_ip():
+@app.route('/test/get_available_endpoint', methods=['POST'])
+def test_get_available_endpoint():
     ak_id, ak_sk, sts_token = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token) 
-    ip = get_available_ip(ots_client)
-    return ip or "Never reach here"
+    endpoint = get_available_endpoint(ots_client)
+    return endpoint or "Never reach here"
 
-def get_available_ip(ots_client):
+def get_available_endpoint(ots_client):
     # blocking until:
-    #     1. get available ip ok
+    #     1. get available endpoint ok
     #     2. function timeout
     while True:
         all_available_endpoints = get_all_available_endpoints(ots_client)
@@ -213,42 +198,37 @@ def get_available_ip(ots_client):
             continue
 
         random.shuffle(all_available_endpoints)
-        for ip in all_available_endpoints:
-            ok = update_ots_row(ots_client, ip, 1, True)
+        for endpoint in all_available_endpoints:
+            ok = update_ots_ref(ots_client, endpoint, 1, True)
             if ok == True:
-                return ip
+                return endpoint
         time.sleep(RETRY_SLEEP_SEC)
 
-
-@app.route('/test/release_ip', methods=['POST'])
-def test_release_ip():
+@app.route('/test/release_endpoint', methods=['POST'])
+def test_release_endpoint():
     ak_id, ak_sk, sts_token = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token) 
-    ok = release_ip(ots_client, "1.2.3.4")
-    return "release_ip : %s" % ok
+    ok = release_endpoint(ots_client, "1.2.3.4")
+    return "release_endpoint : %s" % ok
 
-def release_ip(ots_client, ip):
-    # TODO: 
-    #     if release_ip fails, there will be dirty data
-    #     fix later.
+def release_endpoint(ots_client, endpoint):
     for _ in range(RETRY_MAX_TIMES):
-        ok = update_ots_row(ots_client, ip, 0, False)
+        ok = update_ots_ref(ots_client, endpoint, 0, False)
         if ok == True:
             return True
         time.sleep(RETRY_SLEEP_SEC)
 
     return False
 
-
-@app.route('/test/update_ots_row', methods=['POST'])
-def test_update_ots_row():
+@app.route('/test/update_ots_ref', methods=['POST'])
+def test_update_ots_ref():
     ak_id, ak_sk, sts_token = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token) 
-    #ok = update_ots_row(ots_client, "1.2.3.4", 1, True)
-    ok = update_ots_row(ots_client, "1.2.3.4", 0, False)
+    #ok = update_ots_ref(ots_client, "1.2.3.4", 1, True)
+    ok = update_ots_ref(ots_client, "1.2.3.4", 0, False)
     return "update succ : %s" % ok
 
-def update_ots_row(client, endpoint, ref, cnd_sw):
+def update_ots_ref(client, endpoint, ref, cnd_sw):
     try:
         primary_key = [(OTS_PK, endpoint)]
         update_of_attribute_columns = {
@@ -264,24 +244,59 @@ def update_ots_row(client, endpoint, ref, cnd_sw):
 
         return True
     except OTSClientError as e:
-        print('update_ots_row failed, OTSClientError info:', e)
+        print('update_ots_ref failed, OTSClientError info:', e)
     except OTSServiceError as e:
-        # if condition fail, hit OTSServiceError
-        # update_ots_row failed, OTSServiceError info: ErrorCode: OTSConditionCheckFail, ErrorMessage: Condition check failed.
-        print('update_ots_row failed, OTSServiceError info:', e)
+        print('update_ots_ref failed, OTSServiceError info:', e)
     except Exception as e:
-        print('update_ots_row failed, Exception info:', e)
+        print('update_ots_ref failed, Exception info:', e)
 
     return False
 
+def update_ots_time(client, endpoint):
+    cond_check_fail = False
+    try:
+        primary_key = [(OTS_PK, endpoint)]
+        update_of_attribute_columns = {
+            'PUT': [(OTS_LAST_UPDATE_TMS_KEY, int(time.time()))],
+        }
+        row = Row(primary_key, update_of_attribute_columns)
+        condition = Condition(RowExistenceExpectation.EXPECT_EXIST, SingleColumnCondition(OTS_REF_KEY, 1, ComparatorType.EQUAL))
+        client.update_row(OTS_TABLENAME, row, condition)
+
+        return True, cond_check_fail
+    except OTSClientError as e:
+        print('update_ots_time failed, OTSClientError info:', e)
+    except OTSServiceError as e:
+        cond_check_fail = True
+        print('update_ots_time failed, OTSServiceError info:', e)
+    except Exception as e:
+        print('update_ots_time failed, Exception info:', e)
+
+    return False, cond_check_fail
+
+def period_update_ots_time(client, endpoint):
+    print("forwarding backend endpoint is: ", endpoint)
+    rv, cond_check_fail = update_ots_time(client, endpoint)
+    if rv == False:
+        print("[Critical] update_ots_time failed.")
+
+        # When downsizing occurs, the change in the relationship between CPU instances and GPU instances 
+        # may cause periodic update time failure (conditional failure), requiring the container instance
+        # to obtain the backend GPU IP address again.
+        if cond_check_fail == True:
+            new_endpoint = setup(client)
+            if new_endpoint != None and new_endpoint != "":
+                print("[Notice] change backend endpoint from %s to %s" % (endpoint, new_endpoint))
+                endpoint = new_endpoint
+    threading.Timer(OTS_KEEPALIVE_INTERVAL, period_update_ots_time, [client, endpoint]).start()
 
 @app.route('/test/get_all_available_endpoints', methods=['POST'])
 def test_get_all_available_endpoints():
     ak_id, ak_sk, sts_token = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token) 
-    ips = get_all_available_endpoints(ots_client)
-    print("ips:", ips)
-    return ips
+    endpoints = get_all_available_endpoints(ots_client)
+    print("endpoints:", endpoints)
+    return endpoints
 
 def get_all_available_endpoints(client):
     inclusive_start_primary_key = [(OTS_PK, INF_MIN)]
@@ -313,8 +328,7 @@ def get_all_available_endpoints(client):
             #eg: [('endpoint', '11.22.33.55')] [('ref', 0, 1713529197733)]
             print(row.primary_key, row.attribute_columns)
             output.append(row.primary_key[0][1])
-        print('Total rows: ', len(all_rows))
-        print("output: ", output)
+        print("fetch endpoints result: ", output)
     except OTSClientError as e:
         print('get_all_available_endpoints failed, OTSClientError info:', e)
     except OTSServiceError as e:
