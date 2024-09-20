@@ -51,25 +51,25 @@ def hello_world(path):
     rid = request.headers.get(REQUEST_ID_HEADER)
     print("FC Invoke Start RequestId: " + rid)
     print("FC Invoke End RequestId: " + rid)
-    return "Usage: (1). /endpoint/register?ip=x.x.x.x  (2). /endpoint/unregister?ip=y.y.y.y  (3). /endpoint/list"
+    return "Usage: (1). /endpoint/register?endpoint=x.x.x.x  (2). /endpoint/unregister?endpoint=y.y.y.y  (3). /endpoint/list"
 
 @app.route('/endpoint/register', methods=['GET'])
 def register_endpoint():
     rid = request.headers.get(REQUEST_ID_HEADER)
     print("FC Invoke Start RequestId: " + rid)
 
-    ip = request.args.get("ip")
-    if ip is None:
-        return "missing necessary argument: ?ip=x.x.x.x"
+    endpoint = request.args.get("endpoint")
+    if endpoint is None:
+        return "missing necessary argument: ?endpoint=x.x.x.x"
 
     # step1: register in database
     ak_id, ak_sk, sts_token, _, _, _ = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token)
 
-    rv = insert_endpoint(ots_client, ip)
+    rv = insert_endpoint(ots_client, endpoint)
     if rv == False:
         errmsg = { 'Code': 500, 
-                    'Message': "fail to register the bakcend ip.",
+                    'Message': "fail to register the bakcend endpoint.",
                     "Success": False }
         return errmsg, 500, [("Content-Type", "application/json")]
 
@@ -84,8 +84,8 @@ def register_endpoint():
     print("FC Invoke End RequestId: " + rid)
     return "register succ"
 
-def insert_endpoint(ots_client, ip):
-    primary_key = [('endpoint', ip)]
+def insert_endpoint(ots_client, endpoint):
+    primary_key = [('endpoint', endpoint)]
     attribute_columns = [('ref', 0)]
     row = Row(primary_key, attribute_columns)
     try:
@@ -104,18 +104,18 @@ def unregister_endpoint():
     rid = request.headers.get(REQUEST_ID_HEADER)
     print("FC Invoke Start RequestId: " + rid)
 
-    ip = request.args.get("ip")
-    if ip is None:
-        return "missing necessary argument: ?ip=x.x.x.x"
+    endpoint = request.args.get("endpoint")
+    if endpoint is None:
+        return "missing necessary argument: ?endpoint=x.x.x.x"
 
     # step1: unregister in database
     ak_id, ak_sk, sts_token, _, _, _ = fetch_ctx_info()
     ots_client = OTSClient(OTS_ENDPOINT, ak_id, ak_sk, OTS_INSTANCE, sts_token=sts_token)
 
-    rv = delete_endpoint(ots_client, ip)
+    rv = delete_endpoint(ots_client, endpoint)
     if rv == False:
         errmsg = { 'Code': 500, 
-                    'Message': "fail to unregister the bakcend ip.",
+                    'Message': "fail to unregister the bakcend endpoint.",
                     "Success": False }
         return errmsg, 500, [("Content-Type", "application/json")]
 
@@ -130,8 +130,8 @@ def unregister_endpoint():
     print("FC Invoke End RequestId: " + rid)
     return "unregister succ"
 
-def delete_endpoint(ots_client, ip):
-    primary_key = [('endpoint', ip)]
+def delete_endpoint(ots_client, endpoint):
+    primary_key = [('endpoint', endpoint)]
     row = Row(primary_key)
     try:
         consumed, return_row = ots_client.delete_row(OTS_TABLENAME, row, None)
@@ -223,7 +223,7 @@ def check_leak_endpoints(ots_client):
     for ep in endpoints:
         if ep["ref"] == None or ep["ref"] == 0:
             continue
-        if ep["last_update_tms"] == None or ep["last_update_tms"] == "":
+        if ep["last_update_tms"] == None or ep["last_update_tms"] == "" or isinstance(ep["last_update_tms"], int) == False:
             continue
         if ep["last_update_tms"] < leak_time:
             leak_endpoints.append(ep["endpoint"])
