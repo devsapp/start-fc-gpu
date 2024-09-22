@@ -21,7 +21,7 @@ resources:
     props:
       region: "${vars.region}"
       functionName: "${vars.prefix}-ops"
-      description: "FC混合调度解决方案 - 运维管控函数"
+      description: "FC多集群调度解决方案 - 运维管控函数"
       role: ${vars.roleArn}
       runtime: custom.debian10
       code: ./fc-sched-ops
@@ -71,7 +71,7 @@ resources:
     props:
       region: "${vars.region}"
       functionName: "${vars.prefix}-core"
-      description: "FC混合调度解决方案 - 请求转发函数"
+      description: "FC多集群调度解决方案 - 请求转发函数"
       role: ${vars.roleArn}
       runtime: custom.debian10
       code: ./fc-sched-core
@@ -124,7 +124,7 @@ resources:
     props:
       region: "${vars.region}"
       functionName: "${vars.prefix}-proxy"
-      description: "FC混合调度解决方案 - 统一接入层函数"
+      description: "FC多集群调度解决方案 - 统一接入层函数"
       role: ${vars.roleArn}
       runtime: custom.debian10
       code: ./fc-sched-proxy
