@@ -1,0 +1,9 @@
+resources:
+- manager.yaml
+- registry-secret.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+- name: controller
+  newName: fc-ci-acr-ee-registry.cn-shanghai.cr.aliyuncs.com/fc-gpu-schedule/schedule
+  newTag: pod-monitor-v3
