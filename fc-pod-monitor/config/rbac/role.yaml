@@ -1,0 +1,44 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  - pods
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - fc-gpu.gpu.fc.serverless.aliyun
+  resources:
+  - podaddmonitors
+  - poddeletemonitors
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - fc-gpu.gpu.fc.serverless.aliyun
+  resources:
+  - podaddmonitors/finalizers
+  - poddeletemonitors/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - fc-gpu.gpu.fc.serverless.aliyun
+  resources:
+  - podaddmonitors/status
+  - poddeletemonitors/status
+  verbs:
+  - get
+  - patch
+  - update

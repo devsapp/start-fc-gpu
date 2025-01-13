@@ -240,6 +240,28 @@ fc-sched-ops函数提供了如下运维管控接口，用以代管用户自建ID
    * PATH: /endpoint/list
 
 
+### 实例自动添加/摘除
+
+如果用户的GPU资源是K8s托管的，那么可以通过在用户的K8s集群部署fc-pod-monitor这个组件实现fc3-sched这个调度组件对GPU实例的自动添加/摘除。当有实例因为新版本部署、健康检查失败、缩容等原因被删除时，fc-pod-monitor会监听到这个事件，并调用fc3-sched的运维管控接口/endpoint/unregister?endpoint=ip[:port]，通知fc3-sched删除这个实例；当有实例因为新版本部署、扩容等原因被创建时，fc-pod-monitor会监听到这个事件，并调用fc3-sched的运维管控接口/endpoint/unregister?endpoint=ip[:port]，通知fc3-sched添加这个实例。
+
+#### fc-pod-monitor构建
+
+fc-pod-monitor构建前，需要先根据用户自身集群配置和fc3-sched配置，修改fc-pod-monitor的如下配置：
+* config/manager/manager.yaml文件中，spec/template/spec/containers下manager这个container的环境变量，包括：
+  * WATCH_NAMESPACE
+  * FC_HOOK_URL
+  * FC_HOOK_HOST
+  * POD_PORT
+* config/manager/registry-secret.yaml文件中的docker config配置项:
+  * data/.dockerconfigjson
+
+然后执行`make docker-build docker-push IMG=<some-registry>/<project-name>:tag`, 构建并推送fc-pod-monitor的镜像
+
+#### fc-pod-monitor部署
+
+执行`make deploy IMG=<some-registry>/<project-name>:tag`命令，将fc-pod-monitor部署到用户的K8s集群
+
+
 ## 注意事项
 
 <matters id="flushContent">
